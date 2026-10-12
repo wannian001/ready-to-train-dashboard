@@ -1,0 +1,19 @@
+{
+  "source_archive": "../pmdata.zip",
+  "source_archive_sha256": "53a49d94a2e9713fb8a0fc57d4d9dec3e1e4d2ae866969cd1f7537a5bc125357",
+  "daily_csv_sha256": "aa209b4bf1ba7bfbca9a3caf35f8411937de0362853e5e9876fc412d7eadb7d3",
+  "output": "body_regions.csv",
+  "output_sha256": "d4b1c00b71fccb89253c81d7988ad1bfb310a22cf336cccbf2fbb028dcdc1f6d",
+  "rows": 1729,
+  "region_codes": {
+    "right_calf": "32696007",
+    "left_calf": "48979004",
+    "pelvis": "12921003",
+    "head": "69536005",
+    "left_upper_arm": "368208006",
+    "right_upper_arm": "368209003",
+    "torso": "22943007"
+  },
+  "interpretation": "Daily wellness questionnaire flags; seven coarse soreness regions, not muscles or trained body parts.",
+  "generated_at": "2026-09-18 07:14:41 UTC"
+}

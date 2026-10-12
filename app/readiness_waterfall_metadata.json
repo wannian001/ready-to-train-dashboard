@@ -1,0 +1,48 @@
+{
+  "version": "v3-weekly-level-13-tracked-mean-filled",
+  "target": "same-day self-reported readiness 0-10",
+  "baseline": "mean of one check-in per week: the latest in each of the weeks dated 8-14, 15-21, 22-28 and 29-35 days before the day (at least 3 of the 4 weeks)",
+  "factor_count": 13,
+  "unknown_rule": "an unknown signal takes its training-data average (share of known days it was true), in the fit and in the app, and remains labelled unknown",
+  "fill": {
+    "wk_high": 0.4593,
+    "rep2": 0.3572,
+    "strength2": 0.0796,
+    "big2": 0.1218,
+    "rep1": 0.3501,
+    "big1": 0.1256,
+    "strength1": 0.0769,
+    "running1": 0.2087,
+    "team1": 0.0203,
+    "late0": 0.2331,
+    "short0": 0.1575,
+    "under7": 0.5808,
+    "awake0": 0.5
+  },
+  "selected_model": "ridge_3000",
+  "lambda": 3000,
+  "selection": "strongest shrinkage within 0.005 of the lowest February validation MAE",
+  "limitation": "tracked signals barely change accuracy; the personal level does almost all the work",
+  "train_n": 771,
+  "validation_n": 360,
+  "test_n": 273,
+  "training_end": "2020-02-29",
+  "test_not_used_for_selection": true,
+  "test_label": "March 2020 development hold-out",
+  "participant_test_mae": {
+    "n": 15,
+    "median": 0.806,
+    "min": 0.006,
+    "max": 3.113
+  },
+  "feature_columns": ["wk_high", "rep2", "strength2", "big2", "rep1", "big1", "strength1", "running1", "team1", "late0", "short0", "under7", "awake0"],
+  "generated_at": "2026-09-19 03:51:25 UTC",
+  "input_md5": {
+    "daily.csv": "d143732537f06206b263a6e7116526b2",
+    "sleep_episodes.csv": "c8649303bfb2da96709e66d4d21e8be2",
+    "training_sessions.csv": "fb7d0bee0bea5a20e1bdab17cf2e37c4",
+    "evidence.R": "08b1a30ba0f8b817ba07758e230157d1",
+    "readiness_waterfall.R": "0c50c52bc360fa0290abde6d90dcdb1c",
+    "train_readiness_waterfall.R": "6aa878723807419b387083cde8207db8"
+  }
+}

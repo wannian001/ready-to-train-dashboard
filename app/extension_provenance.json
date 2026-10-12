@@ -1,0 +1,134 @@
+{
+  "schema_version": "pmdata-extension-v1",
+  "prepared_at": "2026-09-16T13:50:00.686146+00:00",
+  "script_sha256": "81a20e8d757020787df290f5073156101432af5007a21bf19b6c042ca6598072",
+  "sources": [
+    {
+      "path": "external/NHANES_2017_March2020/P_DEMO.xpt",
+      "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2017/DataFiles/P_DEMO.xpt",
+      "sha256": "2e46c6c26bf77cd8989f64011ace12cbf42c0f3e03414eb59acc5328c8f87913",
+      "bytes": 3614720
+    },
+    {
+      "path": "external/NHANES_2017_March2020/P_SLQ.xpt",
+      "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2017/DataFiles/P_SLQ.xpt",
+      "sha256": "6eb2495efaefddbebe9b39cf2f1fe8d8ce904d80addc1c5da62540921461ae2b",
+      "bytes": 777200
+    },
+    {
+      "path": "external/NHANES_2017_March2020/P_DEMO.htm",
+      "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2017/DataFiles/P_DEMO.htm",
+      "sha256": "6ac8f9b394615b8b53e1de3bc089c51bd8f1004c01efb746e303476c1f918b86",
+      "bytes": 89096
+    },
+    {
+      "path": "external/NHANES_2017_March2020/P_SLQ.htm",
+      "url": "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2017/DataFiles/P_SLQ.htm",
+      "sha256": "1962d042bd173acf2027dc212dbd313a79c41d3ea6784a99229e5bdbe9f46473",
+      "bytes": 38728
+    },
+    {
+      "archive_member": "participant-overview.xlsx",
+      "sha256": "396a2bc2a36358611c9fc81fb9fffe5d3906c22e75d43fb50a4cfc420f47f8b5"
+    },
+    {
+      "archive_member": "p01/googledocs/reporting.csv",
+      "sha256": "0ff92938d2657dfbaad4f306da5ee6b33c3adb09dc344caab3485d099e1fb0f3"
+    },
+    {
+      "archive_member": "p02/googledocs/reporting.csv",
+      "sha256": "55e9e354a350ca21ffc1e671645edac6c0a29d8a735ab9068dc8b34abb7e5cf5"
+    },
+    {
+      "archive_member": "p03/googledocs/reporting.csv",
+      "sha256": "870ed55fd4958c01563cf2128ade43601dedf5ecc67fad360def818789198a30"
+    },
+    {
+      "archive_member": "p04/googledocs/reporting.csv",
+      "sha256": "bccbc38910ad639e6467003352192c3c6a319cc4de1847ca8bc1477e4b712dc0"
+    },
+    {
+      "archive_member": "p05/googledocs/reporting.csv",
+      "sha256": "4fcb170a4f0935a695442bd285e21a34fa85d8ae79527a0e0768e64cbc5007d0"
+    },
+    {
+      "archive_member": "p06/googledocs/reporting.csv",
+      "sha256": "102d8288783813d0d0afbcb1cc32e46fd1afe480ca935c6717bbf2a8ddd28cfc"
+    },
+    {
+      "archive_member": "p07/googledocs/reporting.csv",
+      "sha256": "b86b790cf0623e62bb20782bce5d56e553717e7790902a3737dabb240fa02fe1"
+    },
+    {
+      "archive_member": "p08/googledocs/reporting.csv",
+      "sha256": "c98aa0c500c3dd982b4019cf92b1a20e8c4f6f42427d0e719ae8faf60b5759f9"
+    },
+    {
+      "archive_member": "p09/googledocs/reporting.csv",
+      "sha256": "4feb2c15d981c0a86ea29f5e9009c6b0247206cb8ff31d513e576bbe30f47d8d"
+    },
+    {
+      "archive_member": "p10/googledocs/reporting.csv",
+      "sha256": "e9bc7fd839a910873d62bb4a3aeb951e20c0f8d69ddb92780f2c524c143e6d3a"
+    },
+    {
+      "archive_member": "p11/googledocs/reporting.csv",
+      "sha256": "f669cd85ef163d93c9134905f73ac4e14ab9d9cb5c75400b6f45f7ec378181f9"
+    },
+    {
+      "archive_member": "p12/googledocs/reporting.csv",
+      "sha256": "50284f6cf7338916d1d0a5cc9532d7a6cecd4bd2b6be9cc29ed58cfd130d798d"
+    },
+    {
+      "archive_member": "p13/googledocs/reporting.csv",
+      "sha256": "183a57e05d70f59fa3f697bf1f3f9817710a683fda0acf415f6b3305f3d68a98"
+    },
+    {
+      "archive_member": "p14/googledocs/reporting.csv",
+      "sha256": "e2398b406e3204c2a79c6eed4534f94e3a9ac9c4a74443754e0d978c3254e272"
+    },
+    {
+      "archive_member": "p16/googledocs/reporting.csv",
+      "sha256": "98f9329a0957c43452ff8f866dc882c3fe743162a15134d82589fee9722c2b25"
+    }
+  ],
+  "questionnaire": {
+    "raw_rows": 1569,
+    "unique_days": 1411,
+    "conflicting_days": 59,
+    "time_anomaly_days": 12,
+    "eligible_days": 1348,
+    "rules": [
+      "Dates use day/month/year; retain earliest equivalent submission.",
+      "All same-day conflicting reports are excluded; original rows remain in archive.",
+      "A submission before its reported day makes the whole day ineligible.",
+      "Maybe/refused alcohol values remain unknown, not No.",
+      "Evening means the selected meal category; no meal clock time exists."
+    ]
+  },
+  "nhanes": {
+    "release": "2017-March 2020 pre-pandemic",
+    "demo_rows": 15560,
+    "sleep_rows": 10195,
+    "adult_positive_weight_rows": 9693,
+    "weight": "WTMECPRP per P_SLQ analytic notes",
+    "description": "US population questionnaire, usual main sleeping period, age at screening, recorded binary sex/gender coding.",
+    "tails": "SLD012/SLD013: 2 is <3 hours; 14 is >=14 hours; no exact values imputed.",
+    "uncertainty": "Weighted descriptive distributions only. No confidence intervals or causal claims.",
+    "joins": "NHANES internal tables joined by SEQN only; PMData selects a demographic reference cohort, never an individual identity join."
+  },
+  "outputs": {
+    "participants.csv": {
+      "sha256": "3db2eedee714b7f36fa928c83e86f9f63d5f60c5afa3ed4242a0b224f22752d4",
+      "bytes": 1452
+    },
+    "questionnaires.csv": {
+      "sha256": "fe06de253aa3849116d50cfcb62a8a37f9a69a6d115417f8bb56966e8180cbea",
+      "bytes": 206517
+    },
+    "nhanes_sleep.csv": {
+      "sha256": "0433cd35429aff76f04f9d1cc028e1fc6f3fdb54adae8b907812609fdee454ce",
+      "bytes": 393710
+    }
+  }
+}

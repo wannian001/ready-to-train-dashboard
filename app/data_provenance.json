@@ -1,0 +1,675 @@
+{
+  "schema_version": "pmdata-day-context-v1",
+  "source": "PMData",
+  "source_url": "https://datasets.simula.no/pmdata/",
+  "doi": "10.1145/3339825.3394926",
+  "source_archive_sha256": "53a49d94a2e9713fb8a0fc57d4d9dec3e1e4d2ae866969cd1f7537a5bc125357",
+  "preparation_script_sha256": "2e602a2783c688443b092dc63a7096c93b31370fc05ae6f117396bb1e19bb43d",
+  "time_alignment": {
+    "rule": "source_calendar_dates",
+    "wellness": "UTC date from effective_time_frame; latest response on that date",
+    "fitbit": "dateOfSleep or dateTime calendar date as supplied; no timezone invented",
+    "limitation": "Fitbit timestamps have no UTC offset. Exact cross-source intraday ordering and timezone alignment are not established."
+  },
+  "sleep_rule": "Prefer mainSleep=true, then longest minutesAsleep, then logId. Plot episode start/end; duration uses reported minutesAsleep. Other episodes remain in sleep_episodes.csv.",
+  "steps_rule": "Sum valid reported minute counts without scaling gaps. Identical duplicate timestamps count once; conflicts are excluded. Zero counts do not establish device wear or rest.",
+  "training_rule": "PMSys duration and RPE x duration for submitted sessions only. No submission is missing activity information, not zero exercise.",
+  "resting_hr_rule": "Non-finite or non-positive source values are treated as unavailable estimates. Original values remain in the archive and daily source references point to them.",
+  "missing_rule": "No imputation or synthetic observations. Missing numeric CSV fields are empty.",
+  "sources": [
+    {
+      "path": "p01/pmsys/wellness.csv",
+      "bytes": 7244,
+      "sha256": "9dc6e6c0bd33487d4621ac4cf26a4f10b150d30a4bb1179b2b52f4396b1cde2e"
+    },
+    {
+      "path": "p01/fitbit/sleep.json",
+      "bytes": 544294,
+      "sha256": "3e140bfcb86856861ca3a70c48fefaf50c3764d588e0c53afbf62ed1734846d8"
+    },
+    {
+      "path": "p01/fitbit/steps.json",
+      "bytes": 11203988,
+      "sha256": "24149da71e88fc8d1c058ba932f4bda8acc48821b596dbdb88fc7cd66075429b"
+    },
+    {
+      "path": "p01/fitbit/resting_heart_rate.json",
+      "bytes": 18890,
+      "sha256": "f18937b69bc5501e2a0f9da5a063c40ec55112bcd346baa41f5974c3cb3ab86d"
+    },
+    {
+      "path": "p01/pmsys/srpe.csv",
+      "bytes": 1993,
+      "sha256": "e787bfc34ab7bcf157f60874a03270abd8b6fe93dc87590a5499a0dbc4a2d39f"
+    },
+    {
+      "path": "p02/pmsys/wellness.csv",
+      "bytes": 4427,
+      "sha256": "0175eeb76a0ababbe55e413dec70768644c02a991afea672a6b0e979bbdafa09"
+    },
+    {
+      "path": "p02/fitbit/sleep.json",
+      "bytes": 541442,
+      "sha256": "fcd1f4fbe8a5d066cd3c1ecfed1cd4072cced6efe544e80f346f00ab488b9841"
+    },
+    {
+      "path": "p02/fitbit/steps.json",
+      "bytes": 5520756,
+      "sha256": "9ea3ccb41615066de51a829827acf190d91b019a50785c390709cfdc921887c5"
+    },
+    {
+      "path": "p02/fitbit/resting_heart_rate.json",
+      "bytes": 11253,
+      "sha256": "f477f28122db257adc773d45995f0cfc98c3cdddf5d44d881c9f367d3c424b55"
+    },
+    {
+      "path": "p02/pmsys/srpe.csv",
+      "bytes": 5884,
+      "sha256": "1c7db476db505537de55264b788ece4bb30fb92a630fbb2190a0915e61cf23ca"
+    },
+    {
+      "path": "p03/pmsys/wellness.csv",
+      "bytes": 3692,
+      "sha256": "e951fa6f4d4932df8dade879b5800e2bbb470b94eebfeb05dff508e3780032c4"
+    },
+    {
+      "path": "p03/fitbit/sleep.json",
+      "bytes": 317602,
+      "sha256": "ac2c7d9ff40cc6e8d35b56762c66f147145a3582161b75ad00c957683da86417"
+    },
+    {
+      "path": "p03/fitbit/steps.json",
+      "bytes": 2720044,
+      "sha256": "248b569e4b8ccb77c71b108c26105797df52d89762b4b344f23c80db503a9b42"
+    },
+    {
+      "path": "p03/fitbit/resting_heart_rate.json",
+      "bytes": 17165,
+      "sha256": "fa9c66fa7267634a15aec3f9b9b4ec0b6653862e4dc2344a01e24fa9728f2c72"
+    },
+    {
+      "path": "p03/pmsys/srpe.csv",
+      "bytes": 180,
+      "sha256": "d1a9be8bd0e7baee66c18dadb553cd021e4f7cf11b45aef0f742368b27e91c97"
+    },
+    {
+      "path": "p04/pmsys/wellness.csv",
+      "bytes": 8341,
+      "sha256": "6a431a635071cf9a5ebbc20eb7122847f20f8a1472fb1c96573fa5a846393db2"
+    },
+    {
+      "path": "p04/fitbit/sleep.json",
+      "bytes": 695593,
+      "sha256": "0e8ee4e38fd1d3c01397210eb9470b946c1bd99c8e4f18d8cae3b8b3ed224ec3"
+    },
+    {
+      "path": "p04/fitbit/steps.json",
+      "bytes": 4443147,
+      "sha256": "c60f82fda204f89a6004b3792f88f2f903cf260d38d63f5fc29c4d89c2c1d443"
+    },
+    {
+      "path": "p04/fitbit/resting_heart_rate.json",
+      "bytes": 4336,
+      "sha256": "ad6c39948154c2700310040b0b1e2f9be49db257f53c7f776555882355d4ec02"
+    },
+    {
+      "path": "p04/pmsys/srpe.csv",
+      "bytes": 5125,
+      "sha256": "74126bcd5e2133c32db681453a5c43fa3ca58d7aa345f857e363acaeb6c4aeb2"
+    },
+    {
+      "path": "p05/pmsys/wellness.csv",
+      "bytes": 6025,
+      "sha256": "c1f6e1f492436450ee74bcac66265143d9c11d7fa4ea293a0067a2c642955420"
+    },
+    {
+      "path": "p05/fitbit/sleep.json",
+      "bytes": 441897,
+      "sha256": "1111bf74616bf2994164d15631e3b31cb49ae6ea612f8cfb27724ccbe5e5a8e0"
+    },
+    {
+      "path": "p05/fitbit/steps.json",
+      "bytes": 5711633,
+      "sha256": "3dc29f62d810e0fde2630392eedb692dfb5970bca346bd51e1406cc736429c28"
+    },
+    {
+      "path": "p05/fitbit/resting_heart_rate.json",
+      "bytes": 11502,
+      "sha256": "36a7f39f4a6ca1ed3142973a25928398b8481b2a784c4ed7caf7e2374d5f0fb9"
+    },
+    {
+      "path": "p05/pmsys/srpe.csv",
+      "bytes": 614,
+      "sha256": "3b738ba8b931b2844aee5cfee4555ce6197c985317968f946c7c889fc026c642"
+    },
+    {
+      "path": "p06/pmsys/wellness.csv",
+      "bytes": 6747,
+      "sha256": "a60a0f533de146b5ca0558164b772a5ad738fd4c1f7795a0135246b7e3a31e8e"
+    },
+    {
+      "path": "p06/fitbit/sleep.json",
+      "bytes": 554900,
+      "sha256": "d965ca077205e078250743a41f2f1236510b40636f9c853ce76fe434b5f2a2ef"
+    },
+    {
+      "path": "p06/fitbit/steps.json",
+      "bytes": 6058609,
+      "sha256": "b7e447816bfb838707b6307fb94c9cc574a346a11e9459b7fce23de0c9dc517f"
+    },
+    {
+      "path": "p06/fitbit/resting_heart_rate.json",
+      "bytes": 18809,
+      "sha256": "f8e0e50f0bc5f437622ccf9b4e98a8c6bf8c5e753974e94153be7399cdac13dc"
+    },
+    {
+      "path": "p06/pmsys/srpe.csv",
+      "bytes": 2780,
+      "sha256": "2c1b330fe07bf06f524fb237cd0fe583328ffcafb6d6708ac5b77155d624e8e1"
+    },
+    {
+      "path": "p07/pmsys/wellness.csv",
+      "bytes": 6008,
+      "sha256": "f33a14b06ccf6393895322391df5d3c0d6ea113322c5c9a7671c46bb22993897"
+    },
+    {
+      "path": "p07/fitbit/sleep.json",
+      "bytes": 597772,
+      "sha256": "f47eb7a7bbaab0dfccd3de36a8838ebfe7d1a03a21f088d2d043797c9276d32d"
+    },
+    {
+      "path": "p07/fitbit/steps.json",
+      "bytes": 5557049,
+      "sha256": "9834642cd9056ed5545535e812375f09b881df1faf3bc4de7cd222efb49f6c20"
+    },
+    {
+      "path": "p07/fitbit/resting_heart_rate.json",
+      "bytes": 18246,
+      "sha256": "8d7d1329420b70ece5b8fffb8089b99956ed722c0938937e7c1b20508be89999"
+    },
+    {
+      "path": "p07/pmsys/srpe.csv",
+      "bytes": 6603,
+      "sha256": "171a7a483db07d6c57d923f23527cadd7ffc78d2a25e0f136cf24b92a42eb6da"
+    },
+    {
+      "path": "p08/pmsys/wellness.csv",
+      "bytes": 5601,
+      "sha256": "a4474f816d00ad23ba63887619383fb5530ec7dd955e19940fa73115767bdc7b"
+    },
+    {
+      "path": "p08/fitbit/sleep.json",
+      "bytes": 664136,
+      "sha256": "4d9b91c57acd63435cf9b1218025d2408852e3359dce26952e76c88c6a3e1cab"
+    },
+    {
+      "path": "p08/fitbit/steps.json",
+      "bytes": 5168033,
+      "sha256": "b45df9a9904627abbec7317264bf1602570ffca6a4d514f13936f7ab01cb7de9"
+    },
+    {
+      "path": "p08/fitbit/resting_heart_rate.json",
+      "bytes": 17629,
+      "sha256": "7ee1300d4060d3ee4079c6214cdc7139359112f865cb1a80467d6ec8dd6e7234"
+    },
+    {
+      "path": "p08/pmsys/srpe.csv",
+      "bytes": 6909,
+      "sha256": "9c63151086b4e2a1817309e7e1b5d151bc0d0999dac5d51cd1bda06f21ad4f2a"
+    },
+    {
+      "path": "p09/pmsys/wellness.csv",
+      "bytes": 4715,
+      "sha256": "77f4fcd0222bdb37d85b0991620851104f5d383c6aa9d2b5e2230805917baa4d"
+    },
+    {
+      "path": "p09/fitbit/sleep.json",
+      "bytes": 663656,
+      "sha256": "182475ce0926229b411a933f466be3cced8372ae6d9ab82fe9334e27bc6caa48"
+    },
+    {
+      "path": "p09/fitbit/steps.json",
+      "bytes": 4369720,
+      "sha256": "d7cec94a9dae62a26a6fcfad51d73d8ea6cedd5566676bf2a904b2abc23e640d"
+    },
+    {
+      "path": "p09/fitbit/resting_heart_rate.json",
+      "bytes": 18709,
+      "sha256": "08c6482d64fb1f81900d6a20ad77b195bbbed72b6b7f67d286ffaaaca3835d5d"
+    },
+    {
+      "path": "p09/pmsys/srpe.csv",
+      "bytes": 242,
+      "sha256": "87540ebfea2878c9a246e3b8d18473323707176dbe8c04fcc083faa66cf40e66"
+    },
+    {
+      "path": "p10/pmsys/wellness.csv",
+      "bytes": 4954,
+      "sha256": "b4fefbdfbb8f0ec7178c0cc83efcc03a2f68ebe227e11e67a5471cd25840aab1"
+    },
+    {
+      "path": "p10/fitbit/sleep.json",
+      "bytes": 424438,
+      "sha256": "ac4024122ea44c4630744a4bfaeabadd92493dd9f2e4c60240a38d9314cdf54a"
+    },
+    {
+      "path": "p10/fitbit/steps.json",
+      "bytes": 3878359,
+      "sha256": "d46be87c28bf9cb5def02e6db1fbedb3e8a334ed195213f27e5f8da314645624"
+    },
+    {
+      "path": "p10/fitbit/resting_heart_rate.json",
+      "bytes": 17043,
+      "sha256": "b6cf561a146c2cf13cefccf8cc976f9b211cec828ebcd892fe683d8653107272"
+    },
+    {
+      "path": "p10/pmsys/srpe.csv",
+      "bytes": 1854,
+      "sha256": "f7a9fadac7efee5dffe2f442c8af6de1632cca76a28b214834f29163ac9fa86e"
+    },
+    {
+      "path": "p11/pmsys/wellness.csv",
+      "bytes": 5319,
+      "sha256": "d2793ccb5ead696090e539a9849b91a170b4e9cd622f9745d50c0925fd73ede8"
+    },
+    {
+      "path": "p11/fitbit/sleep.json",
+      "bytes": 524316,
+      "sha256": "b762cf47f84045a99ae63cf06f3348aedc9f53aadaaf38681b09b62dfe5f5d4c"
+    },
+    {
+      "path": "p11/fitbit/steps.json",
+      "bytes": 4778957,
+      "sha256": "d66ea4ab6041be1267925ff5245ec9d5b14c9f99db90c26dcf3e237cbd2e4c05"
+    },
+    {
+      "path": "p11/fitbit/resting_heart_rate.json",
+      "bytes": 11551,
+      "sha256": "408a5b6943c8fedb441e54f23bfba33c561f21bd4f809a86f062b09f49d7eee3"
+    },
+    {
+      "path": "p11/pmsys/srpe.csv",
+      "bytes": 2018,
+      "sha256": "65829c6e4b2a9b49c110fcdad015eef8ede140c365bf696e58a778ecd55971c5"
+    },
+    {
+      "path": "p12/pmsys/wellness.csv",
+      "bytes": 4416,
+      "sha256": "3c5e213a9c4de3a35744a81469ca1ba2db9e1e3f66ec0a0a06161c653cdbf731"
+    },
+    {
+      "path": "p12/fitbit/sleep.json",
+      "bytes": 9948,
+      "sha256": "8f25b58243a305c2badf0e226db1200d136b91326d606df4319078592dc2aaa1"
+    },
+    {
+      "path": "p12/fitbit/steps.json",
+      "bytes": 4299815,
+      "sha256": "4371aa89321fbc795db51cfd5384253999673e348ff9ec2a286a66e5b01c1da7"
+    },
+    {
+      "path": "p12/pmsys/srpe.csv",
+      "bytes": 2731,
+      "sha256": "f596bc7678dd43101c4a7e197a92b5e26b79588216c6b04a5c139ca6c2fe3228"
+    },
+    {
+      "path": "p13/pmsys/wellness.csv",
+      "bytes": 3900,
+      "sha256": "14640f075ac0aa5c0e5deffcc3b888142d9b9d0752d50cb40e968cdd5b18ae16"
+    },
+    {
+      "path": "p13/fitbit/sleep.json",
+      "bytes": 236105,
+      "sha256": "cb9267f657f51693794564e9559f2f0fb1ad742dc90eaec20c308e124c082c69"
+    },
+    {
+      "path": "p13/fitbit/steps.json",
+      "bytes": 2499782,
+      "sha256": "84ce5a99c98dc7f548f7ef0db6af951cffc49eb692bde1c1ebbb0dc681ea7be9"
+    },
+    {
+      "path": "p13/pmsys/srpe.csv",
+      "bytes": 668,
+      "sha256": "ab519606bfd5c14ff2e42a0eff79b76b945d660dce42bdd6b6575b5109ec3027"
+    },
+    {
+      "path": "p14/pmsys/wellness.csv",
+      "bytes": 5817,
+      "sha256": "61cfd166d45db134bb27ae1549d2748e18bce4ad0c18137362d3965e3f5152e5"
+    },
+    {
+      "path": "p14/fitbit/sleep.json",
+      "bytes": 605040,
+      "sha256": "7da7f8a05991e2bab3a6adeb222573158b5619d0a53a2f80b28cc2edab38dd30"
+    },
+    {
+      "path": "p14/fitbit/steps.json",
+      "bytes": 3534888,
+      "sha256": "5c43d75a4bd5a77fd3bd98c35307cbe2a81d2edf12928dc3eb617c488ca66e64"
+    },
+    {
+      "path": "p14/fitbit/resting_heart_rate.json",
+      "bytes": 16980,
+      "sha256": "0e8ae7137866c41a3ea708760aa638417334a0929d5ee843bc6c6377bf28471e"
+    },
+    {
+      "path": "p14/pmsys/srpe.csv",
+      "bytes": 3735,
+      "sha256": "66a0b9a9441f0e5d8db1ce309cbdb1c2e40455efee8b9951368bd213eae8dc91"
+    },
+    {
+      "path": "p15/pmsys/wellness.csv",
+      "bytes": 4830,
+      "sha256": "d0a06ced1b229e6972c1342f378f518587302f0cc23b71c5f34f816f4d4226ad"
+    },
+    {
+      "path": "p15/fitbit/sleep.json",
+      "bytes": 684606,
+      "sha256": "4f32345095951a4306a90ef90be128c49f1262dc10b3fd8c496e020e040c0fd1"
+    },
+    {
+      "path": "p15/fitbit/steps.json",
+      "bytes": 5049018,
+      "sha256": "1b5ba056489de7646d8e415e9c60aa35e1455d3833ad2965fa41ff4a9c816776"
+    },
+    {
+      "path": "p15/fitbit/resting_heart_rate.json",
+      "bytes": 17959,
+      "sha256": "75df5401e71dc11baf39521ec6288ea22edd842fa425ad570ab693725fea1e9e"
+    },
+    {
+      "path": "p15/pmsys/srpe.csv",
+      "bytes": 6407,
+      "sha256": "119e56cd45f833409759c188a36befcc7514feb2ae1af6e52cc208c2e2967064"
+    },
+    {
+      "path": "p16/pmsys/wellness.csv",
+      "bytes": 3665,
+      "sha256": "991e1ffc3784f744613f42228c2c57de5e082535a536942b5ede9ac8befef082"
+    },
+    {
+      "path": "p16/fitbit/sleep.json",
+      "bytes": 718981,
+      "sha256": "5acf6b34ce75206620da6838d0e2cb94e09b4e4ccb60a700806fbdd8c392a78b"
+    },
+    {
+      "path": "p16/fitbit/steps.json",
+      "bytes": 4015489,
+      "sha256": "89a60d64417064f7e8883db59e9d0d050ba9f8dfd34e6083cc13b3ca5b9c1f11"
+    },
+    {
+      "path": "p16/fitbit/resting_heart_rate.json",
+      "bytes": 18836,
+      "sha256": "347c36a1b354e9e70785dbc448b74fb7be96a0591bfade9d2ccb9926f30512b9"
+    },
+    {
+      "path": "p16/pmsys/srpe.csv",
+      "bytes": 414,
+      "sha256": "e931d04b3ed7137d4dfe0badce8020772f24bac8c1054b97dac703fe87e0ae1d"
+    }
+  ],
+  "participant_diagnostics": {
+    "p01": {
+      "calendar_days": 152,
+      "wellness_days": 138,
+      "main_sleep_days": 150,
+      "step_days": 152,
+      "days_with_all_three_core_fields": 137,
+      "duplicate_wellness_responses": 0,
+      "invalid_response_dates": 0,
+      "invalid_sleep_dates": 0,
+      "invalid_sleep_windows": 0,
+      "invalid_resting_hr_values": 0,
+      "duplicated_step_timestamps": 226,
+      "conflicting_step_timestamps": 67,
+      "invalid_step_rows": 67
+    },
+    "p02": {
+      "calendar_days": 150,
+      "wellness_days": 99,
+      "main_sleep_days": 142,
+      "step_days": 148,
+      "days_with_all_three_core_fields": 96,
+      "duplicate_wellness_responses": 0,
+      "invalid_response_dates": 0,
+      "invalid_sleep_dates": 0,
+      "invalid_sleep_windows": 0,
+      "invalid_resting_hr_values": 2,
+      "duplicated_step_timestamps": 0,
+      "conflicting_step_timestamps": 0,
+      "invalid_step_rows": 0
+    },
+    "p03": {
+      "calendar_days": 152,
+      "wellness_days": 78,
+      "main_sleep_days": 78,
+      "step_days": 122,
+      "days_with_all_three_core_fields": 47,
+      "duplicate_wellness_responses": 4,
+      "invalid_response_dates": 0,
+      "invalid_sleep_dates": 0,
+      "invalid_sleep_windows": 0,
+      "invalid_resting_hr_values": 51,
+      "duplicated_step_timestamps": 0,
+      "conflicting_step_timestamps": 0,
+      "invalid_step_rows": 0
+    },
+    "p04": {
+      "calendar_days": 152,
+      "wellness_days": 144,
+      "main_sleep_days": 144,
+      "step_days": 147,
+      "days_with_all_three_core_fields": 137,
+      "duplicate_wellness_responses": 1,
+      "invalid_response_dates": 0,
+      "invalid_sleep_dates": 0,
+      "invalid_sleep_windows": 0,
+      "invalid_resting_hr_values": 0,
+      "duplicated_step_timestamps": 0,
+      "conflicting_step_timestamps": 0,
+      "invalid_step_rows": 0
+    },
+    "p05": {
+      "calendar_days": 152,
+      "wellness_days": 134,
+      "main_sleep_days": 118,
+      "step_days": 144,
+      "days_with_all_three_core_fields": 105,
+      "duplicate_wellness_responses": 3,
+      "invalid_response_dates": 0,
+      "invalid_sleep_dates": 0,
+      "invalid_sleep_windows": 0,
+      "invalid_resting_hr_values": 9,
+      "duplicated_step_timestamps": 0,
+      "conflicting_step_timestamps": 0,
+      "invalid_step_rows": 0
+    },
+    "p06": {
+      "calendar_days": 152,
+      "wellness_days": 147,
+      "main_sleep_days": 150,
+      "step_days": 152,
+      "days_with_all_three_core_fields": 146,
+      "duplicate_wellness_responses": 0,
+      "invalid_response_dates": 0,
+      "invalid_sleep_dates": 0,
+      "invalid_sleep_windows": 0,
+      "invalid_resting_hr_values": 2,
+      "duplicated_step_timestamps": 183,
+      "conflicting_step_timestamps": 0,
+      "invalid_step_rows": 0
+    },
+    "p07": {
+      "calendar_days": 148,
+      "wellness_days": 132,
+      "main_sleep_days": 142,
+      "step_days": 147,
+      "days_with_all_three_core_fields": 127,
+      "duplicate_wellness_responses": 1,
+      "invalid_response_dates": 0,
+      "invalid_sleep_dates": 0,
+      "invalid_sleep_windows": 0,
+      "invalid_resting_hr_values": 4,
+      "duplicated_step_timestamps": 0,
+      "conflicting_step_timestamps": 0,
+      "invalid_step_rows": 0
+    },
+    "p08": {
+      "calendar_days": 143,
+      "wellness_days": 103,
+      "main_sleep_days": 133,
+      "step_days": 139,
+      "days_with_all_three_core_fields": 94,
+      "duplicate_wellness_responses": 1,
+      "invalid_response_dates": 0,
+      "invalid_sleep_dates": 0,
+      "invalid_sleep_windows": 0,
+      "invalid_resting_hr_values": 4,
+      "duplicated_step_timestamps": 0,
+      "conflicting_step_timestamps": 0,
+      "invalid_step_rows": 0
+    },
+    "p09": {
+      "calendar_days": 152,
+      "wellness_days": 102,
+      "main_sleep_days": 136,
+      "step_days": 151,
+      "days_with_all_three_core_fields": 94,
+      "duplicate_wellness_responses": 0,
+      "invalid_response_dates": 0,
+      "invalid_sleep_dates": 0,
+      "invalid_sleep_windows": 0,
+      "invalid_resting_hr_values": 5,
+      "duplicated_step_timestamps": 0,
+      "conflicting_step_timestamps": 0,
+      "invalid_step_rows": 0
+    },
+    "p10": {
+      "calendar_days": 148,
+      "wellness_days": 95,
+      "main_sleep_days": 99,
+      "step_days": 114,
+      "days_with_all_three_core_fields": 80,
+      "duplicate_wellness_responses": 1,
+      "invalid_response_dates": 0,
+      "invalid_sleep_dates": 0,
+      "invalid_sleep_windows": 0,
+      "invalid_resting_hr_values": 38,
+      "duplicated_step_timestamps": 0,
+      "conflicting_step_timestamps": 0,
+      "invalid_step_rows": 0
+    },
+    "p11": {
+      "calendar_days": 142,
+      "wellness_days": 107,
+      "main_sleep_days": 119,
+      "step_days": 122,
+      "days_with_all_three_core_fields": 107,
+      "duplicate_wellness_responses": 0,
+      "invalid_response_dates": 0,
+      "invalid_sleep_dates": 0,
+      "invalid_sleep_windows": 0,
+      "invalid_resting_hr_values": 18,
+      "duplicated_step_timestamps": 0,
+      "conflicting_step_timestamps": 0,
+      "invalid_step_rows": 0
+    },
+    "p12": {
+      "calendar_days": 148,
+      "wellness_days": 83,
+      "main_sleep_days": 8,
+      "step_days": 128,
+      "days_with_all_three_core_fields": 4,
+      "duplicate_wellness_responses": 0,
+      "invalid_response_dates": 0,
+      "invalid_sleep_dates": 0,
+      "invalid_sleep_windows": 0,
+      "invalid_resting_hr_values": 0,
+      "duplicated_step_timestamps": 0,
+      "conflicting_step_timestamps": 0,
+      "invalid_step_rows": 0
+    },
+    "p13": {
+      "calendar_days": 137,
+      "wellness_days": 68,
+      "main_sleep_days": 51,
+      "step_days": 81,
+      "days_with_all_three_core_fields": 35,
+      "duplicate_wellness_responses": 4,
+      "invalid_response_dates": 0,
+      "invalid_sleep_dates": 0,
+      "invalid_sleep_windows": 0,
+      "invalid_resting_hr_values": 0,
+      "duplicated_step_timestamps": 217,
+      "conflicting_step_timestamps": 0,
+      "invalid_step_rows": 0
+    },
+    "p14": {
+      "calendar_days": 141,
+      "wellness_days": 124,
+      "main_sleep_days": 121,
+      "step_days": 135,
+      "days_with_all_three_core_fields": 107,
+      "duplicate_wellness_responses": 1,
+      "invalid_response_dates": 0,
+      "invalid_sleep_dates": 0,
+      "invalid_sleep_windows": 0,
+      "invalid_resting_hr_values": 11,
+      "duplicated_step_timestamps": 0,
+      "conflicting_step_timestamps": 0,
+      "invalid_step_rows": 0
+    },
+    "p15": {
+      "calendar_days": 146,
+      "wellness_days": 93,
+      "main_sleep_days": 143,
+      "step_days": 144,
+      "days_with_all_three_core_fields": 93,
+      "duplicate_wellness_responses": 2,
+      "invalid_response_dates": 0,
+      "invalid_sleep_dates": 0,
+      "invalid_sleep_windows": 0,
+      "invalid_resting_hr_values": 1,
+      "duplicated_step_timestamps": 0,
+      "conflicting_step_timestamps": 0,
+      "invalid_step_rows": 0
+    },
+    "p16": {
+      "calendar_days": 152,
+      "wellness_days": 82,
+      "main_sleep_days": 147,
+      "step_days": 152,
+      "days_with_all_three_core_fields": 81,
+      "duplicate_wellness_responses": 0,
+      "invalid_response_dates": 0,
+      "invalid_sleep_dates": 0,
+      "invalid_sleep_windows": 0,
+      "invalid_resting_hr_values": 0,
+      "duplicated_step_timestamps": 0,
+      "conflicting_step_timestamps": 0,
+      "invalid_step_rows": 0
+    }
+  },
+  "outputs": [
+    {
+      "path": "daily.csv",
+      "rows": 2367,
+      "sha256": "aa209b4bf1ba7bfbca9a3caf35f8411937de0362853e5e9876fc412d7eadb7d3"
+    },
+    {
+      "path": "hourly_steps.csv",
+      "rows": 46593,
+      "sha256": "fede8b1296d09ed3236890bae7df4d5496d2b8449466c7a570f53fb22936e36d"
+    },
+    {
+      "path": "sleep_episodes.csv",
+      "rows": 2064,
+      "sha256": "734b53adcefc49e57d88addd87bc9603e820dba893706360e03b1d6db5f48996"
+    },
+    {
+      "path": "training_sessions.csv",
+      "rows": 783,
+      "sha256": "d958c119a835c7ebf239d4e790a098f9f7f3e2988618a523fa6f82c747318d3f"
+    }
+  ]
+}
