@@ -230,7 +230,7 @@ addWords({
 
     "so.unit": "/5 · {word}",
     "so.word.1": "very sore", "so.word.2": "sorer than usual", "so.word.3": "same as usual", "so.word.4": "less sore than usual", "so.word.5": "feeling great",
-    "so.felt": "Felt this morning (1 = very sore, 5 = feeling great)",
+    "so.felt": "Felt this morning (higher = less sore: 1 = very sore, 5 = feeling great)",
     "so.compare": "For comparison: {typical}",
     "so.typical": "{pct}% of recorded mornings after {band} were sorer than usual",
     "so.no_band": "No load band for yesterday",
@@ -256,7 +256,7 @@ addWords({
     "foot.data": "Data: PMData (Thambawita et al., 2020, CC BY 4.0) · NHANES 2017 – Mar 2020 (US CDC)",
     "foot.legend": "● record · ◆ association · ◌ concept demo",
     "foot.repo": "Source and the original R Shiny app",
-    "foot.kit": "Built on the dayring design kit",
+    "foot.kit": "Built on the Proactive Health AIO design kit",
     // first-time-reader wording (10-13)
     "brief.q.h": "Question",
     "brief.q": "Can an app that doesn't ask you every day still guess how ready to train you'll say you feel, from your usual level, your fitness tracker and your training log? Built for people who log their training, sleep and how they feel, and for their coaches. It looks back at past records and gives no training advice.",
@@ -416,7 +416,7 @@ addWords({
 
     "so.unit": "/5 · {word}",
     "so.word.1": "很酸痛", "so.word.2": "比平常酸", "so.word.3": "和平常一样", "so.word.4": "比平常轻松", "so.word.5": "感觉很好",
-    "so.felt": "今天早上的感受（1 = 很酸痛，5 = 感觉很好）",
+    "so.felt": "今天早上的感受（分越高越不酸：1 = 很酸痛，5 = 感觉很好）",
     "so.compare": "对照：{typical}",
     "so.typical": "{band}之后的早上，有 {pct}% 比平常更酸",
     "so.no_band": "昨天没有负荷分档",
@@ -442,7 +442,7 @@ addWords({
     "foot.data": "数据：PMData（Thambawita 等，2020，CC BY 4.0）· NHANES 2017 – 2020 年 3 月（美国疾控中心）",
     "foot.legend": "● 记录 · ◆ 关联 · ◌ 概念演示",
     "foot.repo": "源码和原版 R Shiny 应用",
-    "foot.kit": "用 dayring 设计套件搭建",
+    "foot.kit": "用主动健康管理 AIO 设计套件搭建",
     // first-time-reader wording (10-13)
     "brief.q.h": "想回答",
     "brief.q": "一个不每天问你状态的 App，只看你平常的水平、手环和训练记录，能不能猜出你今天会给“准备好训练了吗”打几分？看板写给每天记录训练、睡眠和感受的运动者和他们的教练，用来回看过去的记录，不给训练建议。",

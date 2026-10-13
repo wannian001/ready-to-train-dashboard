@@ -411,7 +411,8 @@ export default {
       adj: `<strong>${esc(finite(r.adjustment) ? dev(r.adjustment, 2) : "—")}</strong>`, active, n });
     const summary = `${ready ? "" : `<p class="forecast-stale-note">${esc(t("rdy.stale"))}</p>`}
       <div class="rv-row">${step(t("rdy.expected"), finite(r.value) ? fmt(r.value, 1) : "—", t("rdy.of10"))}${arrow}${feltStep}${arrow}${gapStep}</div>
-      <p class="rv-equation">${equation}${ctx.revealed ? ` ${hideButton(t("rdy.hide")).replace('class="btn text"', 'class="btn text rv-hide"')}` : ""}</p>`;
+      <p class="rv-equation">${equation}${ctx.revealed ? ` ${hideButton(t("rdy.hide")).replace('class="btn text"', 'class="btn text rv-hide"')}` : ""}</p>
+      <p class="fine-print">${esc(t("rdy.equation.why"))}</p>`;
 
     // felt vs expected (felt from the visible record: the selected day stays hidden until Reveal)
     const s = expectedSeries(ctx.pv, study.model, study.signals, feltDays(ctx.focus));
