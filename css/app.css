@@ -44,9 +44,13 @@
 
 /* ---- the head ---- */
 .head { margin-bottom: var(--s-4); }
-.head .h1-alt { margin: var(--s-1) 0 var(--s-2); font-size: var(--t-lg); font-weight: 600; color: var(--ink-2); }
-.head .purpose { margin: 0 0 var(--s-2); max-width: 82ch; color: var(--ink-2); font-size: var(--t-sm); }
-.head .data-line { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-4); color: var(--ink-3); font-size: var(--t-xs); }
+.head h1 .h1-alt { margin-left: var(--s-2); font-size: var(--t-lg); font-weight: 600; color: var(--ink-2); letter-spacing: 0; white-space: nowrap; }
+.head .purpose { margin: var(--s-2) 0; max-width: 118ch; color: var(--ink-2); font-size: var(--t-sm); }
+.head .project-line, .head .data-line { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-4); font-size: var(--t-xs); }
+.head .project-line { color: var(--ink-2); font-weight: 600; margin-bottom: 2px; }
+.head .data-line { color: var(--ink-3); }
+.solves-link { display: inline-flex; align-items: center; gap: 5px; font-weight: 650; }
+.solves-link .metric-icon { width: 15px; height: 15px; }
 .link-button { display: inline-flex; align-items: center; gap: 5px; padding: 0; border: 0; background: none; color: var(--accent); font-size: var(--t-xs); font-weight: 600; cursor: pointer; }
 .link-button:hover { text-decoration: underline; text-underline-offset: 3px; }
 .link-button .metric-icon { width: 15px; height: 15px; }
@@ -262,3 +266,16 @@ dialog.about::backdrop { background: rgba(10, 12, 18, .45); }
 .page { min-height: 40vh; }
 /* a chart's tooltip keeps its line breaks (data-tip="Mon 2 Mar&#10;6 h 54 min") */
 .tip { white-space: pre-line; max-width: 300px; }
+
+/* the key finding card keeps the R app's look (dark navy, the number in yellow), so the study's one finding
+   stands out among the five snapshot cards */
+.home-card.insight-card { background: #1f2a44; border-color: transparent; color: #e6ebf5; }
+.insight-card .home-card-name > span:first-child { color: #ffffff; }
+.insight-card .card-when, .insight-card .home-card-body small { color: rgba(230, 235, 245, .72); }
+.insight-card .home-card-body p { color: #e6ebf5; }
+.insight-card .home-card-value strong { color: #ffd60a; }
+.insight-card .home-card-value span { color: rgba(230, 235, 245, .8); }
+.insight-card .home-card-title .metric-icon { color: #ffd60a; }
+.insight-card .insight-link { color: #9cc3ff; }
+:root[data-mode="dark"] .home-card.insight-card { background: #26314f; }
+@media (prefers-color-scheme: dark) { :root:not([data-mode="light"]) .home-card.insight-card { background: #26314f; } }
