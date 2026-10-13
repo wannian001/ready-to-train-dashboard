@@ -1,9 +1,10 @@
-// The design summary page (#report): the summary submitted with the R app, in full, in the order of its three
+// The design summary page (#report): first what the project solves (the assignment, the problem chosen, what came
+// out: three cards written for the web), then the summary submitted with the R app, in full, in the order of its three
 // columns (purpose and data · the interface and how to use it · visual choices), then the appendix of resources.
 // Words in ../report-content.js; the PDF is the submitted file reprinted from its source without the student number.
 import { getLang, setLang, t, addWords } from "../i18n.js";
 import { esc } from "../ui.js";
-import { REPORT } from "../report-content.js";
+import { REPORT, BRIEF } from "../report-content.js";
 
 addWords({
   en: { "rp.read_en": "Read the English original", "rp.read_zh": "阅读中文译文" },
@@ -24,7 +25,19 @@ export default {
     const mae = r.mae.map(([label, v, hi]) => `<tr${hi ? ' class="hi"' : ""}><td>${label}</td><td class="v">${v}</td></tr>`).join("");
     const appendix = r.appendix.groups.map(([name, rows]) =>
       `<tr class="group"><td colspan="3">${name}</td></tr>${rows.map((row) => `<tr>${row.map((c, i) => `<td data-label="${esc(r.appendix.head[i])}">${c}</td>`).join("")}</tr>`).join("")}`).join("");
+    const b = BRIEF[getLang()] || BRIEF.en;
+    const pages = [["today", "nav.today"], ["choices", "nav.choices"], ["habits", "nav.habits"]]
+      .map(([go, key]) => `<a href="#${go}" data-go="${go}">${esc(t(key))} ›</a>`).join("");
+    const cards = b.cards.map((c, i) => `<section class="health-card rp-brief-card"><h3><span class="rp-n">${["A", "B", "C"][i]}</span>${c.h}</h3>
+      <ul>${c.items.map((x) => `<li>${x}</li>`).join("")}</ul>${i === 2 ? `<p class="rp-try"><span>${esc(b.tryIt)}</span>${pages}</p>` : ""}</section>`).join("");
     return `
+      <section class="rp-brief" aria-labelledby="rp-brief-title">
+        <h2 id="rp-brief-title">${esc(b.title)}</h2>
+        <p class="rp-brief-lede">${esc(b.lede)}</p>
+        <div class="rp-brief-grid">${cards}</div>
+        <p class="fine-print">${esc(b.source)}</p>
+      </section>
+      <h2 class="rp-section-head">${esc(b.summaryHead)}</h2>
       <div class="rp-note">
         <p>${esc(r.note)}</p>
         <p class="rp-links"><a href="${PDF}" download>${esc(r.pdf)}</a>
