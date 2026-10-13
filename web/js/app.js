@@ -180,9 +180,13 @@ function sidebar() {
 function head() {
   const zh = getLang() === "zh";
   const title = zh ? t("app.alt") : t("app.name"), alt = zh ? t("app.name") : t("app.alt");
+  // laptop first: the two names share one line, and the line under the purpose says what this is (a course
+  // assignment, shown as a web page) with the way to the brief, so a first-time reader knows where to start
   return `<div class="head"><div>
-    <h1>${esc(title)}</h1><p class="h1-alt" lang="${zh ? "en" : "zh-CN"}">${esc(alt)}</p>
+    <h1>${esc(title)} <span class="h1-alt" lang="${zh ? "en" : "zh-CN"}">${esc(alt)}</span></h1>
     <p class="purpose">${esc(t("app.purpose"))}</p>
+    <p class="project-line"><span>${esc(t("app.project"))}</span>
+      ${state.page === "report" ? "" : `<a class="solves-link" href="${hashFor("report", "overview")}">${icon("doc", 16)}${esc(t("app.solves"))} ›</a>`}</p>
     <p class="data-line"><span>${esc(t("app.data", { n: study.people.length, first: dayLabel(study.first, { weekday: false }), last: dayLabel(study.last, { weekday: false }) }))}</span>
       <button type="button" class="link-button" id="about-open">${icon("info", 16)}${esc(t("app.about"))}</button></p>
   </div></div>`;
