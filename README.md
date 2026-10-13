@@ -50,7 +50,7 @@ Build one interactive data visualisation interface in R Shiny on a real dataset 
 
 ### Web version
 
-**[Open it](https://wannian001.github.io/ready-to-train-dashboard/)**. `web/` shows the same three pages, every card, chart, note and "Show the data" table, as a static page. It wears the [dayring design kit](https://github.com/wannian001/dayring/blob/main/docs/DESIGN_KIT.md) (1.3.0): the title is in both languages, the rest follows the 中文 / EN button (first visit: your browser's language), light or dark follows your system, and it works on phones and laptops.
+**[Open it](https://wannian001.github.io/ready-to-train-dashboard/)**. `web/` shows the same three pages, every card, chart, note and "Show the data" table, as a static page. It wears the [Proactive Health AIO design kit](https://github.com/wannian001/proactive-health-aio/blob/main/docs/DESIGN_KIT.md) (1.3.0): the title is in both languages, the rest follows the 中文 / EN button (first visit: your browser's language), light or dark follows your system, and it works on phones and laptops.
 
 <p>
   <img src="screenshots/web_readiness_light_en.png" width="49%" alt="Web version: the Readiness detail with expected, felt and the last 4 weeks">
@@ -146,7 +146,7 @@ Shared as a portfolio piece. There is no open licence; please don't reuse it for
 
 ### 网页版
 
-**[打开](https://wannian001.github.io/ready-to-train-dashboard/)**。`web/` 把同样的三页做成静态网页，每张卡片、每张图、每段说明和“查看数据”表格都在。外观用 [dayring 设计套件](https://github.com/wannian001/dayring/blob/main/docs/DESIGN_KIT.md)（1.3.0）：标题中英两行，其余跟着“中文 / EN”按钮切换（第一次打开按浏览器语言），浅色深色跟随系统，手机和电脑都能用。
+**[打开](https://wannian001.github.io/ready-to-train-dashboard/)**。`web/` 把同样的三页做成静态网页，每张卡片、每张图、每段说明和“查看数据”表格都在。外观用 [主动健康管理 AIO 设计套件](https://github.com/wannian001/proactive-health-aio/blob/main/docs/DESIGN_KIT.md)（1.3.0）：标题中英两行，其余跟着“中文 / EN”按钮切换（第一次打开按浏览器语言），浅色深色跟随系统，手机和电脑都能用。
 
 - 数字一样。`tools/export_web.R` 运行应用自己的 R 代码，把它算出的每个统计量（个人内部估计、BH 校正、预期准备度模型、对照人群、身体部位比例）写进 `web/data/`。随选中的日子或控件变化的部分（平常水平、预期准备度、负荷窗口、能量账本、最近五晚）在浏览器里重新算，`tests/` 逐个参与者日拿它和 R 的原始输出核对：数字、句子和表格。
 - 规则一样。按下“揭晓自评”之前，选中那天的自评不会出现在页面、提示框和表格里。

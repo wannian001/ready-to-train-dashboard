@@ -1,5 +1,6 @@
 // The shell: the menu (a left sidebar, a bottom tab bar on phones), language and light/dark, the participant and
-// day pickers, the Reveal step, hash routing, the Today overview, and the About dialog. Built on the dayring kit.
+// day pickers, the Reveal step, hash routing, the Today overview, and the About dialog. Built on the Proactive Health AIO design kit
+// (formerly dayring; web/kit/ holds the 1.3.0 export).
 // Routes: #today, #today/<section> (readiness, sleep, training, activity, soreness), #choices, #habits;
 // ?p=p07&d=2020-03-26 after the route keeps the participant and day in a shared link.
 import { draw, installTooltip, esc } from "../kit/js/charts.js";
@@ -15,7 +16,7 @@ import { sparkBars, sparkReadiness, sparkLikert } from "./spark.js";
 import { aboutHtml } from "./about.js";
 
 const REPO = "https://github.com/wannian001/ready-to-train-dashboard";
-const KIT = "https://github.com/wannian001/dayring/blob/main/docs/DESIGN_KIT.md";
+const KIT = "https://github.com/wannian001/proactive-health-aio/blob/main/docs/DESIGN_KIT.md";
 const SECTIONS = ["readiness", "sleep", "training", "activity", "soreness"];
 // each Today detail and each page is its own module; one that fails to load shows a note instead of breaking the shell
 const MODULES = {
