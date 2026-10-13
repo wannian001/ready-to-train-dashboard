@@ -1,0 +1,79 @@
+/* Compare habits (app.R page 3): the habits card with its "at a glance" chips, the compare row, the one-habit fold,
+   the ten-measure parallel coordinates and the NHANES outside context. Colours come from the shared tokens only. */
+
+.page-habits .view-intro h2 { max-width: 60ch; }
+
+/* ---- "P07 at a glance": five chips, how often and whether the habit is linked at all (habits.R) ---- */
+.habit-profile-summary { margin: 0 0 var(--s-4); padding: var(--s-4); border-radius: var(--r-md); background: var(--surface-2); border: 1px solid var(--line); }
+.habit-profile-summary .card-top { margin-bottom: var(--s-2); }
+.habit-profile-summary h3 { margin: 0; font-size: var(--t-md); font-weight: 650; }
+.habit-profile-summary .card-top .subtle-tag { margin-left: auto; }
+.habit-count-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--s-2); }
+.habit-count-chip { display: flex; flex-direction: column; gap: 3px; min-width: 0; padding: var(--s-3); border-radius: var(--r-sm); background: var(--surface); border: 1px solid var(--line); }
+.habit-count-chip > span { font-size: var(--t-xs); color: var(--ink-3); line-height: 1.35; }
+.habit-count-chip > strong { font-size: var(--t-lg); line-height: 1.25; font-weight: 700; font-variant-numeric: tabular-nums; }
+.habit-count-chip > small { font-size: 11.5px; color: var(--ink-3); line-height: 1.4; }
+.habit-count-chip .habit-link { margin-top: 3px; }
+.habit-count-chip .habit-link.clear { color: var(--c-load); font-weight: 650; }
+@media (max-width: 980px) { .habit-count-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .habit-count-grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---- compare row: the list, "View P03 instead", "Clear comparison" ---- */
+.compare-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--s-2) var(--s-4); margin: 0 0 var(--s-3); }
+.compare-picker { width: 180px; max-width: 100%; }
+.compare-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center; }
+
+/* ---- controls with a label above (the habit switch, the nights switch) ---- */
+.hb-control { display: flex; flex-direction: column; gap: 4px; min-width: 0; max-width: 100%; }
+.hb-control-label { font-size: var(--t-xs); color: var(--ink-3); font-weight: 600; }
+.seg.hb-seg { display: flex; flex-wrap: wrap; border-radius: var(--r-md); max-width: 100%; }
+.seg.hb-seg button { flex: 1 1 auto; border-radius: var(--r-sm); min-height: 32px; }
+.page-habits .seg button { min-height: 32px; }
+.page-habits .seg { flex-wrap: wrap; max-width: 100%; }
+
+/* ---- the one-habit fold inside the card (R .sub-module) ---- */
+details.sub-module { margin-top: var(--s-4); padding-top: var(--s-3); border-top: 1px solid var(--line); }
+details.sub-module > summary { cursor: pointer; list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-3); }
+details.sub-module > summary::-webkit-details-marker { display: none; }
+details.sub-module > summary::before { content: "›"; display: inline-block; width: 14px; color: var(--ink-3); font-size: var(--t-lg); transition: transform .15s var(--ease); }
+details.sub-module[open] > summary::before { transform: rotate(90deg); }
+details.sub-module[open] > summary { margin-bottom: var(--s-3); }
+details.sub-module .summary-title { font-size: var(--t-md); font-weight: 650; }
+details.sub-module .comparison-conclusion { margin-top: var(--s-3); }
+details.sub-module .fine-print { margin-bottom: var(--s-3); }
+
+/* ---- the summary rows of the two lower folds: the tag sits right after the title ---- */
+.peer-card > summary .evidence-tag, .population-card > summary .evidence-tag { margin-left: 0; }
+.peer-subhead { margin: var(--s-4) 0 var(--s-1); font-size: var(--t-md); font-weight: 650; }
+ul.peer-missing { margin: 0; padding-left: 1.2em; display: grid; gap: 2px; }
+
+/* ---- outside context: the switches, the numbers on the left, the chart on the right ---- */
+.population-controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--s-3) var(--s-5); margin: 0 0 var(--s-4); }
+.hb-radius { width: 150px; }
+.population-layout { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: var(--s-5); align-items: start; }
+.population-info { min-width: 0; }
+.cohort-caption { margin: 0 0 var(--s-3); font-size: var(--t-xs); color: var(--ink-3); line-height: 1.6; }
+.population-values { display: grid; gap: var(--s-4); }
+.population-values .small-stat strong { font-size: var(--t-xl); }
+.population-plot { min-width: 0; }
+@media (max-width: 800px) {
+  .population-layout { grid-template-columns: minmax(0, 1fr); }
+  .population-values { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-4); }
+}
+@media (max-width: 420px) { .population-values { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---- charts: marks to compare with are buttons; a hovered or focused participant is drawn in ink ---- */
+.hb-svg text { font-family: var(--font); }
+.hb-svg [data-compare] { cursor: pointer; outline: none; }
+.hb-dot.other:hover, .hb-dot.other:focus-visible { fill: var(--ink); }
+.hb-dot.other:focus-visible, .hb-row:focus-visible circle, .hb-row:focus-visible rect:not([fill="transparent"]) { stroke: var(--accent); stroke-width: 2; }
+.hb-row.other:hover circle, .hb-row.other:focus-visible circle { fill: var(--ink); }
+.hb-row:focus-visible > rect[fill="transparent"] { fill: var(--accent-soft); }
+.pc-p.other:hover .pc-seg, .pc-p.other:focus-visible .pc-seg { stroke: var(--ink); stroke-opacity: 1; stroke-width: 2; }
+.pc-p.other:hover .pc-dot, .pc-p.other:focus-visible .pc-dot { fill: var(--ink); fill-opacity: 1; }
+.pc-p.other .pc-seg { stroke-opacity: .5; }
+.pc-p.other .pc-dot { fill-opacity: .7; }
+.pc-p:focus-visible .pc-seg { stroke-dasharray: none; }
+.po-night { cursor: pointer; }
+.po-night:hover, .po-night:focus-visible { stroke: var(--ink); stroke-width: 2; outline: none; }
+.po-bar:hover { fill: var(--ink-3); }

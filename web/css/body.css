@@ -1,0 +1,118 @@
+/* Today › Soreness and Today › Sleep (js/sections/soreness.js, js/sections/sleep.js), after the R app's style.css.
+   Data colours: the body figure's ramp (body_regions.R BODY_PALETTE, light pink → deep red, a share of check-ins),
+   the sleep-efficiency ramp (light → dark violet over 80–100%), the soreness answers (--sore-1..5 in app.css). */
+
+:root {
+  /* body_regions.R BODY_PALETTE; the figure is a light illustration plate in both modes (as in R), so the ramp is the same */
+  --body-1: #f5d3dd; --body-2: #e27596; --body-3: #c0275a; --body-4: #86113a; --body-none: #e5e5ea;
+  --body-plate: #ffffff; --body-label: #3a3a3c; --body-label-halo: #ffffff;
+  /* story_visuals.R scale_fill_gradient(low = "#d6cbf5", high = "#2e1470"): darker = more of the time in bed asleep */
+  --sleep-eff-lo: #d6cbf5; --sleep-eff-hi: #2e1470;
+  --cmp-track: #eeeef2; --cmp-band: #d5d5dd;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-mode="light"]) {
+    --sleep-eff-lo: #e3dbff; --sleep-eff-hi: #6a4ed6;
+    --cmp-track: #232937; --cmp-band: #3a4256;
+  }
+}
+:root[data-mode="dark"] {
+  --sleep-eff-lo: #e3dbff; --sleep-eff-hi: #6a4ed6;
+  --cmp-track: #232937; --cmp-band: #3a4256;
+}
+
+/* ---- This morning ---- */
+.soreness-answer { margin-bottom: var(--s-2); }
+.soreness-answer .likert-row { font-size: var(--t-md); grid-template-columns: minmax(70px, 110px) auto 1fr; }
+.locked-line { margin: var(--s-2) 0 0; color: var(--ink-3); font-size: var(--t-sm); }
+.soreness-answer .comparison-conclusion, .soreness-answer .fine-print { margin-top: var(--s-3); }
+.soreness-load-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-3); margin: var(--s-3) 0 var(--s-1); }
+.soreness-load-day { background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-md); padding: var(--s-3) var(--s-4); min-width: 0; }
+.soreness-load-day > div { display: flex; justify-content: space-between; gap: var(--s-2); align-items: baseline; }
+.soreness-load-day > div strong { font-size: var(--t-sm); }
+.soreness-load-day > div span { font-size: var(--t-xs); color: var(--ink-3); white-space: nowrap; }
+.soreness-load-day p { margin: var(--s-2) 0 4px; font-size: var(--t-md); font-weight: 650; overflow-wrap: anywhere; }
+.soreness-load-day small { display: block; color: var(--ink-3); font-size: var(--t-xs); line-height: 1.5; }
+@media (max-width: 560px) { .soreness-load-grid { grid-template-columns: 1fr; } }
+
+/* ---- where people were sore: the body figure ---- */
+.body-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 var(--s-2); }
+.body-chips .scope-chip { white-space: normal; max-width: 100%; padding-top: 3px; padding-bottom: 3px; }
+.body-region-layout { display: grid; grid-template-columns: minmax(240px, 320px) minmax(0, 1fr); gap: var(--s-6); align-items: center; margin: var(--s-3) 0 var(--s-2); }
+.body-figure { display: grid; gap: var(--s-2); justify-items: center; min-width: 0; }
+.body-silhouette { display: block; width: 100%; max-width: 320px; height: auto; margin: auto; }
+.anatomical-body { background: var(--body-plate); border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
+.anatomical-body .body-reference { opacity: .72; }
+.body-region-shape { fill-opacity: .84; cursor: help; outline: none; transition: fill-opacity .18s var(--ease); }
+.body-region-shape:hover, .body-region-shape:focus-visible { fill-opacity: 1; }
+.body-region-shape:focus-visible rect { stroke: var(--accent); stroke-width: 3; }
+.body-side, .body-orientation { fill: var(--body-label); paint-order: stroke; stroke: var(--body-label-halo); stroke-linejoin: round; font-weight: 750; }
+/* text sizes in the figure's own units: about 11 px on screen at 300 px wide */
+.body-male .body-side { font-size: 22px; stroke-width: 6px; letter-spacing: .04em; }
+.body-male .body-orientation { font-size: 19px; stroke-width: 6px; letter-spacing: .14em; }
+.body-female .body-side { font-size: 42px; stroke-width: 10px; letter-spacing: .04em; }
+.body-female .body-orientation { font-size: 36px; stroke-width: 10px; letter-spacing: .14em; }
+.body-legend { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 6px; width: 100%; max-width: 320px; font-size: var(--t-xs); color: var(--ink-3); }
+.body-legend-bar { height: 8px; border-radius: 4px; background: linear-gradient(90deg, var(--body-1), var(--body-2), var(--body-3), var(--body-4)); }
+.body-legend small { grid-column: 1 / -1; text-align: center; }
+.body-caveat { grid-column: 1 / -1; margin: 4px 0 0; font-size: var(--t-xs); color: var(--ink-2); line-height: 1.5; }
+.body-region-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-2); }
+.body-region-list li { display: grid; grid-template-columns: 14px 1fr auto; gap: var(--s-2); align-items: center; background: var(--surface-2); border: 1px solid var(--line);
+  border-radius: var(--r-sm); padding: 9px var(--s-3); font-size: var(--t-sm); min-width: 0; }
+.body-region-list strong { font-weight: 600; }
+.body-region-list li > span:last-child { color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.region-swatch { width: 12px; height: 12px; border-radius: 4px; box-shadow: 0 0 0 1px var(--line-2); }
+@media (max-width: 700px) {
+  .body-region-layout { grid-template-columns: 1fr; gap: var(--s-4); }
+  .body-silhouette { max-width: 300px; }
+  .body-region-list { grid-template-columns: 1fr; }
+}
+
+/* ---- the load-vs-soreness reference ---- */
+.ls-legend { gap: var(--s-2) var(--s-4); margin: 0 0 var(--s-2); }
+.ls-svg { display: block; overflow: visible; }
+.ls-title { font-size: 12.5px; fill: var(--ink); }
+.ls-title.marked { font-weight: 700; }
+.ls-grid { stroke: var(--c-grid); stroke-width: 1; }
+.ls-seg { stroke: var(--surface); stroke-width: 1; }
+.ls-seg:hover, .ls-seg:focus-visible { stroke: var(--ink); stroke-width: 1.5; outline: none; }
+.ls-label { font-size: 11px; font-weight: 600; pointer-events: none; font-variant-numeric: tabular-nums; }
+.ls-axis { font-size: 11px; fill: var(--ink-3); }
+
+/* ---- the week of sleep windows ---- */
+.sw-svg { display: block; overflow: visible; }
+.sw-legend-title { font-size: 12px; fill: var(--ink-2); }
+.sw-legend { font-size: 11px; fill: var(--ink-3); }
+.sw-grid { stroke: var(--c-grid); stroke-width: 1; }
+.sw-axis { font-size: 11px; fill: var(--ink-3); font-variant-numeric: tabular-nums; }
+.sw-usual { stroke: var(--ink-3); stroke-width: 1.1; stroke-dasharray: 5 4; }
+.sw-bar { cursor: pointer; }
+.sw-bar:hover, .sw-bar:focus-visible { stroke: var(--ink); stroke-width: 2; outline: none; }
+.sw-pct { font-size: 11px; fill: var(--ink); font-variant-numeric: tabular-nums; }
+.sw-gap path { stroke: var(--ink-3); stroke-width: 1.6; fill: none; }
+.sw-gap text { font-size: 10.5px; fill: var(--ink-3); }
+.sw-day { font-size: 11px; fill: var(--ink-2); }
+.sw-wd { font-size: 10.5px; fill: var(--ink-3); }
+.sw-day.here, .sw-wd.here { fill: var(--ink); font-weight: 700; }
+.sleep-empty { display: grid; place-items: center; color: var(--ink-3); font-size: var(--t-sm); border: 1px dashed var(--line-2); border-radius: var(--r-md); }
+
+/* ---- last night against the usual (day_view.R compare_row_ui) ---- */
+.compare-card .card-top { align-items: flex-start; }
+.cmp-row { display: grid; gap: 5px; padding: var(--s-3) 0; border-bottom: 1px solid var(--line); }
+.cmp-row:last-child { border-bottom: 0; }
+.cmp-head { display: flex; justify-content: space-between; gap: var(--s-2); align-items: baseline; }
+.cmp-label { font-size: var(--t-sm); font-weight: 650; color: var(--ink); }
+.cmp-source { font-size: var(--t-xs); color: var(--ink-3); text-align: right; }
+.cmp-main { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px var(--s-3); }
+.cmp-main strong { font-size: var(--t-lg); font-weight: 680; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+.cmp-diff { font-size: var(--t-sm); color: var(--ink-2); }
+.cmp-track-wrap { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: var(--s-2); }
+.cmp-end { font-size: 11px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.cmp-track { position: relative; height: 12px; background: var(--cmp-track); border-radius: 6px; margin: 4px 6px; }
+.cmp-band { position: absolute; top: 0; bottom: 0; background: var(--cmp-band); border-radius: 6px; }
+.cmp-usual { position: absolute; top: -3px; bottom: -3px; width: 2px; margin-left: -1px; background: var(--ink-3); }
+.cmp-value { position: absolute; top: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--c-sleep);
+  border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--c-sleep); }
+.cmp-scale { font-size: var(--t-xs); color: var(--ink-3); line-height: 1.5; }
+.likert-block { gap: 2px; }
+.likert-block .likert-row { padding: 3px 0; }

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Ready to Train? An interactive look-back at how sleep, training and everyday habits line up with feeling ready to train: 16 people, PMData 2019–2020. 训练状态看板：睡眠、训练和日常习惯跟训练准备度的关系。">
+  <title>Ready to Train? · 训练状态看板</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <!-- the dayring design kit (tokens, components), then this page's own rules -->
+  <link rel="stylesheet" href="kit/css/tokens.css">
+  <link rel="stylesheet" href="kit/css/kit.css">
+  <link rel="stylesheet" href="css/app.css">
+  <!-- one stylesheet per part: readiness + everyday habits, soreness + sleep, training + steps, compare habits -->
+  <link rel="stylesheet" href="css/readiness.css">
+  <link rel="stylesheet" href="css/body.css">
+  <link rel="stylesheet" href="css/training.css">
+  <link rel="stylesheet" href="css/habits.css">
+  <script>
+    // apply a saved light/dark choice and the folded menu before first paint so the page does not flash
+    try {
+      var m = new URLSearchParams(location.search).get("mode") || localStorage.getItem("readytrain.mode");
+      if (m === "light" || m === "dark") document.documentElement.dataset.mode = m;
+      if (localStorage.getItem("readytrain.side") === "folded") document.documentElement.classList.add("side-folded");
+    } catch (e) {}
+    // if a script could not be loaded (a dropped connection), say so instead of loading forever
+    function readyFailed() {
+      if (window.readyStarted || !document.querySelector("main")) return;
+      var zh = (navigator.language || "").slice(0, 2) === "zh";
+      document.querySelector("main").innerHTML = '<div class="card"><p class="lede">' + (zh ? "这一页没加载完" : "The page did not finish loading") +
+        '</p><p><button class="tool" type="button" onclick="location.reload()">' + (zh ? "重新加载" : "Reload") + "</button></p></div>";
+    }
+    setTimeout(readyFailed, 15000);
+  </script>
+  <script type="module" src="js/app.js" onerror="readyFailed()"></script>
+</head>
+<body>
+  <aside class="side"></aside>
+  <main aria-live="polite"><p class="muted">Loading…</p></main>
+</body>
+</html>
