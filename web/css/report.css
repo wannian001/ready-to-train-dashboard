@@ -1,0 +1,83 @@
+/* The design summary page: the submitted A3 summary as a reading column (its three columns one after another), then
+   the appendix table. Wide screens keep the summary's own rhythm: text cards beside the figures they describe. */
+
+.rp-note { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-2) var(--s-4); margin: 0 0 var(--s-4);
+  padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: var(--surface-2); border: 1px solid var(--line); font-size: var(--t-sm); color: var(--ink-2); }
+.rp-note p { margin: 0; max-width: 78ch; }
+.rp-links { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); align-items: center; white-space: nowrap; }
+.rp-links a { font-weight: 600; font-size: var(--t-sm); }
+.rp-links .link-button { font-size: var(--t-sm); }
+
+.rp { max-width: 1120px; }
+.rp-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: var(--s-2) var(--s-6); margin: var(--s-2) 0 var(--s-4); }
+.rp-top .rp-title { margin: 0; font-size: var(--t-xl); line-height: 1.2; font-weight: 700; letter-spacing: -.015em; }
+.rp-suffix { font-weight: 500; color: var(--ink-3); font-size: .62em; letter-spacing: 0; }
+.rp-sub { margin: var(--s-1) 0 0; color: var(--ink-2); font-size: var(--t-sm); }
+.rp-meta { margin: 0; text-align: right; font-size: var(--t-xs); color: var(--ink-3); line-height: 1.6; }
+.rp-meta strong { color: var(--ink); }
+@media (max-width: 1000px) { .rp-meta { text-align: left; } }
+
+/* the three columns of the A3 page, one after another; from 1100px the figures sit beside their text */
+.rp-col { display: grid; gap: var(--s-4); margin-bottom: var(--s-4); }
+.rp-col > .health-card { margin-bottom: 0; }
+@media (min-width: 1300px) {
+  .rp-col { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+  .rp-col:nth-of-type(2) > .rp-fig { grid-column: 1 / -1; }
+}
+.rp-card h2 { display: flex; align-items: baseline; gap: var(--s-1); margin: 0 0 var(--s-2); font-size: var(--t-md); font-weight: 680; }
+.rp-n { display: inline-block; min-width: 1.4em; color: var(--c-expected); }
+.rp-card p { margin: 0 0 var(--s-2); font-size: var(--t-sm); line-height: 1.6; color: var(--ink); max-width: 78ch; }
+.rp-card p:last-child { margin-bottom: 0; }
+.rp .term { font-style: italic; font-weight: 600; }
+.rp code { font-family: var(--mono); font-size: .9em; background: var(--surface-2); padding: 0 4px; border-radius: 4px; }
+
+.rp-finding { display: flex; gap: var(--s-3); align-items: center; margin: var(--s-2) 0 var(--s-3); padding: var(--s-3) var(--s-4); border-radius: var(--r-md);
+  background: #1f2a44; color: #e6ebf5; }
+.rp-finding .rp-big { font-size: var(--t-2xl); font-weight: 750; color: #ffd60a; letter-spacing: -.02em; white-space: nowrap; }
+.rp-finding p { margin: 0; color: #e6ebf5; font-size: var(--t-sm); }
+.rp-finding b { color: #fff; }
+:root[data-mode="dark"] .rp-finding { background: #26314f; }
+@media (prefers-color-scheme: dark) { :root:not([data-mode="light"]) .rp-finding { background: #26314f; } }
+table.rp-mae { margin: 0 0 var(--s-3); font-size: var(--t-sm); }
+table.rp-mae caption { caption-side: top; text-align: left; color: var(--ink-3); font-size: var(--t-xs); padding-bottom: var(--s-1); }
+table.rp-mae td.v { text-align: right; font-variant-numeric: tabular-nums; font-weight: 650; width: 4em; }
+table.rp-mae tr.hi td { background: var(--c-expected-soft); }
+table.rp-mae td { padding-left: var(--s-2); }
+
+.rp-fig { margin: 0; min-width: 0; }
+/* the screenshots keep their light background in both modes: they are pictures of the light R app */
+.rp-frame { position: relative; border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--line); background: #f2f2f7; }
+.rp-frame img { display: block; width: 100%; height: auto; }
+.rp-frame.pad { padding: 1.667% 1.667% 1.667% 4.667%; }
+.rp-frame.pad img { border-radius: 6px; }
+.rp-fig figcaption { margin-top: var(--s-2); font-size: var(--t-xs); color: var(--ink-3); line-height: 1.5; max-width: 90ch; }
+.rp-fig figcaption b { color: var(--ink); }
+.rp-badge { position: absolute; width: 22px; height: 22px; border-radius: 50%; background: #d4145a; color: #fff; font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; transform: translate(-45%, -45%); box-shadow: 0 0 0 2px #fff; }
+@media (max-width: 640px) { .rp-frame .rp-badge { width: 16px; height: 16px; font-size: 10px; } }
+.rp-steps { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--s-3) var(--s-5); }
+.rp-steps li { position: relative; padding-left: 32px; font-size: var(--t-sm); line-height: 1.55; }
+.rp-steps .rp-badge { left: 0; top: 1px; transform: none; box-shadow: none; }
+
+.rp-foot { margin: 0 0 var(--s-6); padding-top: var(--s-3); border-top: 1px solid var(--line); font-size: var(--t-xs); color: var(--ink-3); display: grid; gap: var(--s-1); }
+.rp-foot p { margin: 0; }
+
+/* the appendix */
+.rp-appendix h2 { margin: 0; font-size: var(--t-xl); letter-spacing: -.01em; }
+.rp-appendix .rp-sub { margin-bottom: var(--s-3); }
+.rp-appendix .table-wrap { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--shadow); padding: var(--s-2) var(--s-4) var(--s-3); }
+table.rp-res { table-layout: fixed; font-size: var(--t-sm); }
+table.rp-res th:nth-child(1) { width: 28%; } table.rp-res th:nth-child(2) { width: 32%; }
+table.rp-res td { vertical-align: top; line-height: 1.5; padding-top: var(--s-2); padding-bottom: var(--s-2); overflow-wrap: anywhere; }
+table.rp-res td:first-child { font-weight: 600; }
+table.rp-res td:nth-child(2) { color: var(--ink-2); }
+table.rp-res tr.group td { padding-top: var(--s-4); font-weight: 700; color: var(--c-expected); font-size: var(--t-sm); border-top: 0; }
+/* phones: each resource as a small block, its three cells stacked with their column names */
+@media (max-width: 720px) {
+  table.rp-res, table.rp-res tbody, table.rp-res tr, table.rp-res td { display: block; width: 100%; }
+  table.rp-res thead { display: none; }
+  table.rp-res tr { border-top: 1px solid var(--line); padding: var(--s-2) 0; }
+  table.rp-res tr.group { border-top: 0; }
+  table.rp-res td { border: 0; padding: 2px 0; }
+  table.rp-res td[data-label]:not(:first-child)::before { content: attr(data-label); display: block; font-size: var(--t-xs); color: var(--ink-3); font-weight: 600; }
+}

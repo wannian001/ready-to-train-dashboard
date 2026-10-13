@@ -5,7 +5,7 @@
 How sleep, training and everyday habits line up with feeling ready to train: 16 people who log their days, PMData 2019–2020.<br>
 睡眠、训练和日常习惯，跟“准备好训练了吗”的感受怎样对得上：16 名每天做记录的人，PMData 2019–2020。
 
-**[Live demo · 在线演示](https://wannian001.github.io/ready-to-train-dashboard/)** (no R needed · 不用装 R) &nbsp;·&nbsp; [English](#english) &nbsp;·&nbsp; [中文](#中文)
+**[Live demo · 在线演示](https://wannian001.github.io/ready-to-train-dashboard/)** (no R needed · 不用装 R) &nbsp;·&nbsp; [Design summary · 设计说明](https://wannian001.github.io/ready-to-train-dashboard/#report) &nbsp;·&nbsp; [English](#english) &nbsp;·&nbsp; [中文](#中文)
 
 </div>
 
@@ -50,6 +50,7 @@ The audience is people who log their training, sleep and how they feel each day 
 - Same numbers. `tools/export_web.R` runs the app's own R code and writes every statistic it computes (the within-person estimates, BH corrections, the expected-readiness model, cohorts, body-region shares) to `web/data/`. What depends on the chosen day or a control (the usual level, the expected readiness, load windows, the energy ledger, the last five nights) is recalculated in the browser, and `tests/` checks it against R's own output for every participant-day: the numbers, the sentences and the tables.
 - Same rules. The selected day's check-in stays out of the page, its tooltips and its tables until you press Reveal.
 - What is new: the look and the colours (one hue per thing measured, kept apart from status colours), the Chinese text, and a few edge-case fixes: a day with a check-in but no soreness answer now says so instead of "hidden until you reveal", and the readiness waterfall labels the final expected value.
+- The **Design summary** page holds the design summary submitted with the app, word for word: the summary page with its four figures and the appendix of resources, plus a Chinese translation.
 - No server and no R: the data is about 0.9 MB of JSON; the body figures are the app's own images.
 
 To preview locally, run `python3 -m http.server 8000 --directory web` and open <http://localhost:8000>. Rebuild the data with `Rscript tools/export_web.R` (needs the R packages below); run the tests with `for f in tests/*.test.mjs; do node "$f"; done`.
@@ -71,7 +72,7 @@ shiny::runApp("app")
 
 Re-run on R 4.6.1 on 12 October 2026; the screenshots of the R app come from that run.
 
-`app/` is the submitted ZIP unpacked as is, with no file changed (ZIP SHA-256 `d2e1574e96ecb6e3bc467393b119b5df24fd31947c207760756487513c719c5b`). The design summary PDF submitted with it contains personal details and is not included.
+`app/` is the submitted ZIP unpacked as is, with no file changed (ZIP SHA-256 `d2e1574e96ecb6e3bc467393b119b5df24fd31947c207760756487513c719c5b`). The design summary submitted with it is on the web version's [Design summary](https://wannian001.github.io/ready-to-train-dashboard/#report) page in full, and as [a PDF](web/report/Design_Summary_JiakuoTang.pdf) printed again from its source with only the student number left out.
 
 ### Data
 
@@ -130,6 +131,7 @@ Shared as a portfolio piece. There is no open licence; please don't reuse it for
 - 数字一样。`tools/export_web.R` 运行应用自己的 R 代码，把它算出的每个统计量（个人内部估计、BH 校正、预期准备度模型、对照人群、身体部位比例）写进 `web/data/`。随选中的日子或控件变化的部分（平常水平、预期准备度、负荷窗口、能量账本、最近五晚）在浏览器里重新算，`tests/` 逐个参与者日拿它和 R 的原始输出核对：数字、句子和表格。
 - 规则一样。按下“揭晓自评”之前，选中那天的自评不会出现在页面、提示框和表格里。
 - 新加的：外观和配色（每种被测的东西一个颜色，和表示状态的颜色分开）、中文，以及几处边角情况的修正：有自评但没答酸痛的那天，现在会直接说明，不再写“揭晓前隐藏”；预期准备度的瀑布图标出了最终的预期值。
+- **设计说明**页放的是随应用一起提交的设计说明，逐字照录：说明页、四张配图和资源附录都在，另有中文译文。
 - 不用服务器，也不用 R：数据是大约 0.9 MB 的 JSON，人体图用的是原版的图片。
 
 在本地预览：运行 `python3 -m http.server 8000 --directory web`，打开 <http://localhost:8000>。重新生成数据用 `Rscript tools/export_web.R`（需要下面的 R 包）；运行测试用 `for f in tests/*.test.mjs; do node "$f"; done`。
@@ -151,7 +153,7 @@ shiny::runApp("app")
 
 2026-10-12 在 R 4.6.1 上重新跑过一次，R 原版的截图就是这次截的。
 
-`app/` 里是交到 Canvas 的压缩包原样解压的内容，一个文件都没改。压缩包的 SHA-256 是 `d2e1574e96ecb6e3bc467393b119b5df24fd31947c207760756487513c719c5b`。同时提交的设计说明 PDF 含个人信息，没有放进来。
+`app/` 里是交到 Canvas 的压缩包原样解压的内容，一个文件都没改。压缩包的 SHA-256 是 `d2e1574e96ecb6e3bc467393b119b5df24fd31947c207760756487513c719c5b`。同时提交的设计说明全文在网页版的[设计说明](https://wannian001.github.io/ready-to-train-dashboard/#report)页，也有[PDF](web/report/Design_Summary_JiakuoTang.pdf)：从同一份源文件重新打印，只去掉了学号。
 
 ### 数据来源
 
