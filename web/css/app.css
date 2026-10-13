@@ -37,8 +37,33 @@
   --on-sore-dark: #0b0d13; --on-sore-light: #eceef5;
 }
 
-/* ---- the menu: Today's own entry is highlighted on the overview even though its sections are listed under it ---- */
-.side-nav a.here[aria-current="page"] { background: var(--accent-soft); }
+/* ---- the menu: an item with pages under it (Today) folds them away. The wide, unfolded sidebar shows the item as a
+   button that opens and closes the list; the icon rail and the phone tab bar show it as a plain link (js/app.js) ---- */
+.side-group { display: contents; }
+.side-group-toggle, .side-subs { display: none; }
+@media (min-width: 900px) {
+  html:not(.side-folded) .side-group > a { display: none; }
+  html:not(.side-folded) .side-group-toggle {
+    display: flex; align-items: center; gap: var(--s-3); width: 100%; min-height: 40px; padding: 0 var(--s-3); border: 0; border-radius: var(--r-md);
+    background: none; color: var(--ink-2); font: inherit; font-size: var(--t-sm); font-weight: 550; white-space: nowrap; text-align: left; cursor: pointer;
+  }
+  .side-group-toggle svg { width: 18px; height: 18px; flex: none; }
+  html:not(.side-folded) .side-group-toggle:hover { background: var(--surface-2); color: var(--ink); }
+  .side-group-toggle .chev { width: 14px; height: 14px; margin-left: auto; color: var(--ink-3); transition: transform .18s var(--ease); }
+  .side-group.open .side-group-toggle .chev { transform: rotate(90deg); }
+  /* closed while one of its pages is open: the item stands in for that page */
+  .side-group.holds-current:not(.open) .side-group-toggle { background: var(--accent-soft); color: var(--ink); font-weight: 650; }
+  .side-group.holds-current .side-group-toggle svg:not(.chev) { color: var(--accent); }
+  /* the list slides open; while closed its links are hidden from the keyboard and screen readers too */
+  html:not(.side-folded) .side-subs { display: grid; grid-template-rows: 0fr; margin-top: -2px; transition: grid-template-rows .18s var(--ease); }
+  .side-subs > div { display: flex; flex-direction: column; gap: 2px; min-height: 0; overflow: hidden; visibility: hidden; transition: visibility 0s .18s; }
+  .side-subs > div > :first-child { margin-top: 2px; }
+  .side-group.open .side-subs { grid-template-rows: 1fr; }
+  .side-group.open .side-subs > div { visibility: visible; transition-delay: 0s; }
+  /* the open page in the list is highlighted (the kit's rule for an item with pages under it would also catch a
+     page that has another one after it) */
+  .side-nav .side-subs a.side-sub[aria-current="page"] { background: var(--accent-soft); }
+}
 .side .brand span { font-weight: 700; letter-spacing: -.01em; }
 .side .brand svg { width: 28px; height: 28px; flex: none; }
 

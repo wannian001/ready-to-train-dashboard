@@ -148,18 +148,28 @@ function revealBar(r, hasCheckin) {
 }
 
 // ---- the sidebar ----------------------------------------------------------------------------------------
-const NAV = [["today", "sun"], ["choices", "list"], ["habits", "compare"], ["report", "doc"]];
+// an item with pages under it (Today) folds them away: on the wide sidebar the item is a button that opens and
+// closes its list, which starts closed and stays as the reader left it; on the icon rail and the phone tab bar,
+// where sub-pages are not listed, the same item is a link to its first page
+const NAV = [["today", "sun", ["overview", ...SECTIONS]], ["choices", "list"], ["habits", "compare"], ["report", "doc"]];
+const CHEVRON = `<svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg>`;
+const openGroups = new Set((store.get("menu") || "").split(",").filter(Boolean));
 const folded = () => document.documentElement.classList.contains("side-folded");
 const wide = () => matchMedia("(min-width: 900px)").matches;
 function sidebar() {
   const side = document.querySelector(".side");
-  const items = NAV.map(([p, ic]) => {
+  const items = NAV.map(([p, ic, subs]) => {
     const here = p === state.page;
     const glyph = ic === "compare" || ic === "doc" ? icon(ic, 18) : kitIcon(ic, 18);
-    const subs = here && p === "today"
-      ? SECTIONS.map((s) => `<a class="side-sub" href="${hashFor("today", s)}" ${state.section === s ? 'aria-current="page"' : ""}><span>${esc(t(`nav.${s}`))}</span></a>`).join("") : "";
-    const current = here && (p !== "today" || state.section === "overview");
-    return `<a href="${hashFor(p, "overview")}" title="${esc(t(`nav.${p}`))}" ${here ? 'aria-current="page"' : ""} class="${current ? "here" : ""}">${glyph}<span>${esc(t(`nav.${p}`))}</span></a>${subs}`;
+    const label = `${glyph}<span>${esc(t(`nav.${p}`))}</span>`;
+    const link = `<a href="${hashFor(p, "overview")}" title="${esc(t(`nav.${p}`))}" ${here ? 'aria-current="page"' : ""}>${label}</a>`;
+    if (!subs) return link;
+    const open = openGroups.has(p);
+    const list = subs.map((s) => `<a class="side-sub" href="${hashFor(p, s)}" ${here && state.section === s ? 'aria-current="page"' : ""}><span>${esc(t(`nav.${s}`))}</span></a>`).join("");
+    // closed while one of its pages is open: the item itself is highlighted, so the reader still sees where they are
+    return `<div class="side-group${open ? " open" : ""}${here ? " holds-current" : ""}" data-group="${p}">${link}
+      <button type="button" class="side-group-toggle" aria-expanded="${open}" aria-controls="side-${p}">${label}${CHEVRON}</button>
+      <div class="side-subs" id="side-${p}"><div>${list}</div></div></div>`;
   }).join("");
   side.innerHTML = `
     <div class="side-head">
@@ -179,6 +189,15 @@ function sidebar() {
   };
   const setFold = (on) => { document.documentElement.classList.toggle("side-folded", on); store.set("side", on ? "folded" : "open"); label(); };
   label();
+  side.querySelectorAll(".side-group-toggle").forEach((button) => {
+    button.onclick = () => {
+      const group = button.closest(".side-group"), on = !group.classList.contains("open");
+      group.classList.toggle("open", on);
+      button.setAttribute("aria-expanded", String(on));
+      if (on) openGroups.add(group.dataset.group); else openGroups.delete(group.dataset.group);
+      store.set("menu", [...openGroups].join(","));
+    };
+  });
   side.querySelector("#fold").onclick = () => { setFold(true); brand.focus(); };
   brand.onclick = (e) => { if (folded() && wide()) { e.preventDefault(); setFold(false); side.querySelector("#fold").focus(); } };
   side.querySelector("#lang").onclick = () => { const next = getLang() === "zh" ? "en" : "zh"; store.set("lang", next); setLang(next); render(); };
