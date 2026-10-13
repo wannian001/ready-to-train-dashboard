@@ -128,6 +128,7 @@ addWords({
     "nav.soreness": "Soreness",
     "nav.choices": "Everyday habits",
     "nav.habits": "Compare habits",
+    "nav.report": "Design summary",
     "nav.back": "Back to Today",
 
     "ctl.participant": "Participant",
@@ -281,6 +282,7 @@ addWords({
     "nav.soreness": "酸痛",
     "nav.choices": "日常习惯",
     "nav.habits": "习惯对比",
+    "nav.report": "设计说明",
     "nav.back": "回到今天",
 
     "ctl.participant": "参与者",

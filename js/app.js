@@ -22,6 +22,7 @@ const MODULES = {
   readiness: () => import("./sections/readiness.js"), sleep: () => import("./sections/sleep.js"),
   training: () => import("./sections/training.js"), activity: () => import("./sections/activity.js"),
   soreness: () => import("./sections/soreness.js"), choices: () => import("./pages/choices.js"), habits: () => import("./pages/habits.js"),
+  report: () => import("./pages/report.js"),
 };
 const store = {
   get(key) { try { return localStorage.getItem(`readytrain.${key}`); } catch { return null; } },
@@ -56,7 +57,7 @@ function parseHash() {
   const [page, section] = path.split("/");
   const params = new URLSearchParams(qs);
   return {
-    page: ["today", "choices", "habits"].includes(page) ? page : "today",
+    page: ["today", "choices", "habits", "report"].includes(page) ? page : "today",
     section: page === "today" && SECTIONS.includes(section) ? section : "overview",
     person: params.get("p"), day: params.get("d"),
   };
@@ -133,14 +134,14 @@ function revealBar(r, hasCheckin) {
 }
 
 // ---- the sidebar ----------------------------------------------------------------------------------------
-const NAV = [["today", "sun"], ["choices", "list"], ["habits", "compare"]];
+const NAV = [["today", "sun"], ["choices", "list"], ["habits", "compare"], ["report", "doc"]];
 const folded = () => document.documentElement.classList.contains("side-folded");
 const wide = () => matchMedia("(min-width: 900px)").matches;
 function sidebar() {
   const side = document.querySelector(".side");
   const items = NAV.map(([p, ic]) => {
     const here = p === state.page;
-    const glyph = ic === "compare" ? icon("compare", 18) : kitIcon(ic, 18);
+    const glyph = ic === "compare" || ic === "doc" ? icon(ic, 18) : kitIcon(ic, 18);
     const subs = here && p === "today"
       ? SECTIONS.map((s) => `<a class="side-sub" href="${hashFor("today", s)}" ${state.section === s ? 'aria-current="page"' : ""}><span>${esc(t(`nav.${s}`))}</span></a>`).join("") : "";
     const current = here && (p !== "today" || state.section === "overview");
@@ -353,7 +354,8 @@ async function render() {
   const banner = state.page === "choices" ? `<div class="pooled-banner">${icon("info")}<span>${t("pooled.banner", { n: study.people.length,
     first: monthLabel(study.first), last: monthLabel(study.last) })}</span></div>` : "";
   const scrollY = window.scrollY;
-  main.innerHTML = `${head()}${pickers()}${banner}<p class="sr" role="status" aria-live="polite">${esc(t("ctl.status", { id: ctx.pid, day: dayLabel(state.focus) }))}</p>
+  const picks = state.page === "report" ? "" : pickers();
+  main.innerHTML = `${head()}${picks}${banner}<p class="sr" role="status" aria-live="polite">${esc(t("ctl.status", { id: ctx.pid, day: dayLabel(state.focus) }))}</p>
     <div class="page page-${name}">${back}${content}</div>${footer()}`;
   if (mount) mount(main.querySelector(".page"));
   window.scrollTo(0, scrollY);
@@ -364,11 +366,12 @@ function footer() {
     <span><a href="${REPO}">${esc(t("foot.repo"))}</a> · <a href="${KIT}">${esc(t("foot.kit"))}</a></span></footer>`;
 }
 function wire(main) {
+  main.querySelector("#about-open").onclick = openAbout;
+  if (state.page === "report") return;   // no pickers on the design summary
   main.querySelector("#participant").onchange = (e) => setPerson(e.target.value);
   const input = main.querySelector("#focus-day");
   input.onchange = () => { if (input.value) setDay(input.value); };
   main.querySelector(".date-jump").addEventListener("click", () => { try { input.showPicker(); } catch { input.focus(); } });
-  main.querySelector("#about-open").onclick = openAbout;
 }
 
 // clicks anywhere: open a day, reveal or hide, compare
