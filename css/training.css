@@ -1,0 +1,47 @@
+/* Today › Training (training load, sessions per month, the energy ledger) and Today › Steps (recorded steps and the
+   hourly heatmap). Load is amber, steps teal, the ledger (a model) blue; colours only through the tokens in app.css. */
+
+/* a small labelled switch in a card's heading row (8 / 12 weeks) or under it (7 days / 4 weeks) */
+.trd-range { display: inline-flex; align-items: center; gap: var(--s-2); }
+.trd-range > span { font-size: var(--t-xs); color: var(--ink-3); font-weight: 600; }
+.trd-range .seg button { min-height: 30px; }
+.acd-range { margin: 0 0 var(--s-3); }
+@media (max-width: 640px) {
+  .card-top .trd-range { width: 100%; justify-content: space-between; }
+}
+
+/* the inspected day above the training-load chart (story_visuals.R training_load_callout) */
+.load-callout { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; margin: var(--s-1) 0 var(--s-3); padding: 10px 14px;
+  border-radius: var(--r-md); background: var(--c-load-soft); border: 1px solid var(--c-load-soft); color: var(--ink); }
+.load-callout.inspecting { background: var(--c-load); border-color: var(--c-load); color: var(--surface); }
+.load-callout-main { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.load-callout-date { font-size: var(--t-xs); opacity: .85; }
+.load-callout-main strong { font-size: var(--t-md); font-weight: 650; }
+.load-callout-pct { font-size: var(--t-lg); font-weight: 750; font-variant-numeric: tabular-nums; }
+.load-callout-facts { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: var(--t-xs); opacity: .92; font-variant-numeric: tabular-nums; }
+.load-callout .load-open { margin-left: auto; min-height: 32px; background: var(--surface); color: var(--c-load); }
+.load-callout .load-open:hover { filter: brightness(.97); }
+.trd-hit { cursor: pointer; outline: none; }
+.trd-hit:focus-visible { stroke: var(--accent); stroke-width: 2.5; }
+
+/* the energy ledger's two numbers */
+.battery-controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--s-3) var(--s-5); margin: var(--s-2) 0 var(--s-4); }
+.trb-field { display: flex; flex-direction: column; gap: 4px; max-width: 260px; }
+.trb-field > span { font-size: var(--t-xs); color: var(--ink-2); font-weight: 600; }
+.trb-field input { height: 38px; width: 160px; max-width: 100%; padding: 0 var(--s-3); border-radius: var(--r-md); border: 1px solid var(--line-2);
+  background: var(--surface); color: var(--ink); font: inherit; font-size: var(--t-sm); font-variant-numeric: tabular-nums; }
+.trb-field input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.battery-card .chart-shell { margin-top: var(--s-2); }
+.battery-card > summary .evidence-tag { margin-left: auto; }
+
+/* Steps: three numbers side by side (app.R activity_summary) */
+.metric-heading.teal .metric-icon { color: var(--c-steps); }
+.activity-stat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3); }
+.activity-stat { display: flex; flex-direction: column; gap: 4px; min-width: 0; padding: 14px; border-radius: var(--r-md); background: var(--surface-2); }
+.activity-stat > span { font-size: var(--t-xs); color: var(--ink-3); font-weight: 600; }
+.activity-stat > strong { font-size: var(--t-xl); font-weight: 680; letter-spacing: -.01em; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.activity-stat > small { font-size: var(--t-xs); color: var(--ink-3); line-height: 1.5; }
+@media (max-width: 720px) {
+  .activity-stat-grid { grid-template-columns: minmax(0, 1fr); }
+  .activity-stat > strong { font-size: var(--t-lg); }
+}
