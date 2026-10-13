@@ -81,3 +81,19 @@ table.rp-res tr.group td { padding-top: var(--s-4); font-weight: 700; color: var
   table.rp-res td { border: 0; padding: 2px 0; }
   table.rp-res td[data-label]:not(:first-child)::before { content: attr(data-label); display: block; font-size: var(--t-xs); color: var(--ink-3); font-weight: 600; }
 }
+
+/* ---- what this project solves: three cards above the submitted summary ---- */
+.rp-brief { margin: 0 0 var(--s-6); }
+.rp-brief > h2 { margin: var(--s-2) 0 var(--s-1); font-size: var(--t-xl); font-weight: 700; letter-spacing: -.015em; }
+.rp-brief-lede { margin: 0 0 var(--s-4); color: var(--ink-2); font-size: var(--t-sm); max-width: 82ch; }
+.rp-brief-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); align-items: stretch; }
+@media (max-width: 1180px) { .rp-brief-grid { grid-template-columns: 1fr; } }
+.rp-brief-card { margin: 0; display: flex; flex-direction: column; }
+.rp-brief-card h3 { display: flex; align-items: baseline; gap: var(--s-1); margin: 0 0 var(--s-2); font-size: var(--t-md); font-weight: 680; }
+.rp-brief-card ul { margin: 0; padding-left: 1.1em; display: grid; gap: var(--s-2); font-size: var(--t-sm); line-height: 1.55; color: var(--ink); }
+.rp-brief-card li::marker { color: var(--ink-3); }
+.rp-try { margin: auto 0 0; padding-top: var(--s-3); display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-3); align-items: baseline; font-size: var(--t-sm); }
+.rp-try span { color: var(--ink-3); }
+.rp-try a { font-weight: 600; }
+.rp-brief .fine-print { margin-top: var(--s-3); }
+.rp-section-head { margin: 0 0 var(--s-3); padding-top: var(--s-4); border-top: 1px solid var(--line); font-size: var(--t-xl); font-weight: 700; letter-spacing: -.015em; }

@@ -161,3 +161,55 @@ export const REPORT = {
     },
   },
 };
+
+// Written for the web page, not part of the submitted summary: what the assignment asked for (from the Canvas
+// assignment page, copied on 19 September 2026), the problem chosen within it, and what came out. Shown above the
+// summary so a reader who does not know the course can place it.
+export const BRIEF = {
+  en: {
+    title: "What this project solves",
+    lede: "A course assignment on one side, a real question on the other. Read this first, then the design summary below as it was submitted.",
+    cards: [
+      { h: "The assignment", items: [
+        "<b>GEOM90007 Information Visualisation</b>, University of Melbourne, Semester 2 2026 · Assignment 2 · individual · 20% of the subject · due 22 September 2026.",
+        "Build one interactive data visualisation interface in <b>R Shiny</b> on a <b>real dataset</b> of your own choice. It must serve a defined purpose and audience, contain two or more data graphics (at least one interactive), offer at least one interaction beyond Shiny's built-in defaults, and follow the course's principles of interaction design, cartography and data graphics. Unlike Assignment 1, Tableau no longer does part of the design thinking.",
+        "Hand in the app as a ZIP that runs as is, plus a <b>one-page design summary</b> that justifies the design choices (the document below) and an appendix of every source and how it is used.",
+        "Marked on data correspondence (25), data integrity (15), data density and aesthetics (25), technical challenge and interaction design (25) and the design summary (10)."] },
+      { h: "The problem I chose", items: [
+        "<b>For whom:</b> people who log their training, sleep and how they feel each day (recreational athletes, regular gym-goers) and their coaches.",
+        "<b>Their questions:</b> How is the body today? Which records is that judgement based on? Which habits go with a better next day?",
+        "<b>The idea tested:</b> an app that asks for a check-in only now and then could still say what to expect each morning. So the dashboard shows the <i>expected</i> readiness first, then reveals how the person actually felt.",
+        "<b>Data:</b> PMData, 16 people, November 2019 to April 2020 (Fitbit, morning check-ins, training logs, a food questionnaire); NHANES as outside context for sleep."] },
+      { h: "What came out", items: [
+        "Three pages: <b>Today</b> (five snapshot cards, each with a detail view), <b>Everyday habits</b> (18 habits and next-morning readiness) and <b>Compare habits</b> (one participant among the others). Every number is tagged as a record, an association or a concept demo.",
+        "<b>Findings:</b> of 16 everyday habits, only going to bed 1 h+ later than usual has a clear link with next-morning readiness (0.46 points lower, BH-adjusted p &lt; .05). Tracked data barely changes the expectation: hold-out error 1.01 points, the same as the usual level alone.",
+        "<b>Mark:</b> not yet released."] },
+    ],
+    tryIt: "Try it:",
+    source: "The assignment card is a summary of the Canvas assignment page (read on 19 September 2026).",
+    summaryHead: "The design summary, as submitted",
+  },
+  zh: {
+    title: "这个项目解决什么问题",
+    lede: "一边是课程作业的要求，一边是一个真实的问题。先看这三张卡片，再看下面原样提交的设计说明。",
+    cards: [
+      { h: "老师布置的作业", items: [
+        "墨尔本大学 <b>GEOM90007 信息可视化</b>，2026 年第 2 学期 · 作业 2 · 个人完成 · 占总成绩 20% · 2026 年 9 月 22 日截止。",
+        "用 <b>R Shiny</b> 做一个交互式数据可视化界面，数据必须<b>真实</b>，由自己选。界面要服务一个明确的目的和受众；至少两个数据图形，其中至少一个可以交互；至少一种超出 Shiny 内建默认的交互；设计要依据课上讲的交互设计、制图和数据图形原则。和作业 1 不同，这次没有 Tableau 替你做一部分设计判断。",
+        "提交一个能直接运行的 ZIP，加一份<b>一页的设计说明</b>，论证每个设计选择（就是下面这份），第二页附录写清每个来源和它在界面里的用途。",
+        "评分维度：数据对应（25）、数据诚实（15）、数据密度与美观（25）、技术难度与交互设计（25）、设计说明（10）。"] },
+      { h: "我选的问题", items: [
+        "<b>给谁用：</b>每天记录训练、睡眠和自我感受的人（业余运动员、常去健身房的人）和他们的教练。",
+        "<b>他们想知道：</b>今天身体怎么样？这个判断依据哪些记录？哪些习惯和更好的第二天相伴？",
+        "<b>要验证的想法：</b>一个只偶尔请人填自评的 App，每天早上也能说出预期会怎样。所以看板先给出<i>预期</i>的准备度，再揭晓这个人当天的真实感受。",
+        "<b>数据：</b>PMData，16 人，2019 年 11 月到 2020 年 4 月（Fitbit、晨间自评、训练日志、饮食问卷）；NHANES 作睡眠的外部参照。"] },
+      { h: "做出了什么", items: [
+        "三页：<b>今天</b>（五张快照卡片，每张都能点开看详情）、<b>日常习惯</b>（18 个习惯和第二天早上的准备度）、<b>习惯对比</b>（一名参与者放在其他人中间）。每个数字都标明是记录、关联还是概念演示。",
+        "<b>发现：</b>16 个日常习惯里，只有比平常晚睡 1 小时以上和第二天早上的准备度有明确关联（低 0.46 分，BH 校正后 p &lt; .05）。追踪数据几乎不改变预期：留出集误差 1.01 分，和只用平常水平一样。",
+        "<b>分数：</b>待发布。"] },
+    ],
+    tryIt: "去看看：",
+    source: "“老师布置的作业”一栏概括自 Canvas 作业页（2026 年 9 月 19 日读取）。",
+    summaryHead: "原样提交的设计说明",
+  },
+};

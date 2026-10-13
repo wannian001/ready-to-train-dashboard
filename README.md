@@ -17,6 +17,10 @@ A solo assignment for GEOM90007 Information Visualisation at the University of M
 
 In October 2026 a [web version](#web-version) was added that opens in any browser without R. The submitted app in `app/` is unchanged.
 
+### The assignment
+
+Build one interactive data visualisation interface in R Shiny on a real dataset of your own choice. It had to serve a defined purpose and audience, contain two or more data graphics (at least one interactive), offer at least one interaction beyond Shiny's built-in defaults, and follow the course's principles of interaction design, cartography and data graphics. It came with a one-page design summary justifying the design choices, plus an appendix of sources. Individual, 20% of the subject, marked on data correspondence (25), data integrity (15), data density and aesthetics (25), technical challenge and interaction design (25) and the design summary (10). The [Design summary page](https://wannian001.github.io/ready-to-train-dashboard/#report) opens with this brief, the problem chosen and what came out.
+
 ### The problem
 
 The audience is people who log their training, sleep and how they feel each day (recreational athletes, regular gym-goers) and their coaches. Looking back at one day, they want to know three things: How is the body today? Which records is that judgement based on? Which habits go with a better next day? The dashboard is an exploratory look-back, not training or medical advice.
@@ -96,6 +100,10 @@ Shared as a portfolio piece. There is no open licence; please don't reuse it for
 2026 年 10 月加了一个[网页版](#网页版)，不用装 R，浏览器直接打开。`app/` 里提交的原版没有改动。
 
 ![网页版，中文、深色模式：18 个日常习惯和第二天早上的准备度](screenshots/web_choices_dark_zh.png)
+
+### 作业要求
+
+用 R Shiny 做一个交互式数据可视化界面，数据必须真实、由自己选。界面要服务一个明确的目的和受众；至少两个数据图形，其中至少一个可以交互；至少一种超出 Shiny 内建默认的交互；设计要依据课上讲的交互设计、制图和数据图形原则。另交一页设计说明，论证每个设计选择，并附上来源附录。个人作业，占总成绩 20%，评分维度是数据对应（25）、数据诚实（15）、数据密度与美观（25）、技术难度与交互设计（25）、设计说明（10）。网页版的[设计说明页](https://wannian001.github.io/ready-to-train-dashboard/#report)开头就是这份作业要求、我选的问题和做出了什么。
 
 ### 这个看板解决什么问题
 
