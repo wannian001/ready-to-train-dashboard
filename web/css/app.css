@@ -279,3 +279,11 @@ dialog.about::backdrop { background: rgba(10, 12, 18, .45); }
 .insight-card .insight-link { color: #9cc3ff; }
 :root[data-mode="dark"] .home-card.insight-card { background: #26314f; }
 @media (prefers-color-scheme: dark) { :root:not([data-mode="light"]) .home-card.insight-card { background: #26314f; } }
+
+/* the head's three lines for a first-time reader: the question, what came out, my part */
+.head .brief { margin: var(--s-2) 0 var(--s-2); display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: var(--s-3); row-gap: 5px; max-width: 128ch; font-size: var(--t-sm); line-height: 1.55; }
+.brief-row { display: contents; }
+.brief-row dt { font-weight: 700; color: var(--ink); white-space: nowrap; }
+.brief-row dd { margin: 0; color: var(--ink-2); }
+.head .data-line { margin-top: var(--s-1); }
+@media (max-width: 640px) { .head .brief { grid-template-columns: 1fr; row-gap: 2px; } .brief-row dd { margin-bottom: var(--s-2); } }

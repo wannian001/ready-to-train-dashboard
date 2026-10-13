@@ -4,12 +4,12 @@
 // ?p=p07&d=2020-03-26 after the route keeps the participant and day in a shared link.
 import { draw, installTooltip, esc } from "../kit/js/charts.js";
 import { icon as kitIcon } from "../kit/js/icons.js";
-import { getLang, setLang, t, fmt, dev, dur, gap, pid, dayLabel, monthLabel, monthShort, weekdayShort, finite } from "./i18n.js";
+import { getLang, setLang, t, fmt, dev, dur, gap, clock, pid, dayLabel, monthLabel, monthShort, weekdayShort, finite } from "./i18n.js";
 import "./i18n/terms.js";
 import "./i18n/about.js";
 import { loadStudy, loadPerson } from "./data.js";
 import { addDays, inRecord, at, series, visiblePerson, expectedOn, usualStats, trainingLoadSeries, loadChangePct,
-  focalBand, sparkWindow } from "./model.js";
+  focalBand, sparkWindow, signalOn } from "./model.js";
 import { icon, evidenceTag, scopeChip, revealButton, hideButton } from "./ui.js";
 import { sparkBars, sparkReadiness, sparkLikert } from "./spark.js";
 import { aboutHtml } from "./about.js";
@@ -118,19 +118,32 @@ export function gapWords(felt, expected) {
   return t(g > 0 ? "gap.better" : "gap.worse", { v: fmt(Math.abs(g), 1) });
 }
 
-// ---- the reveal bar (app.R reveal_bar_ui) ---------------------------------------------------------------------
+// ---- the reveal bar (app.R reveal_bar_ui), reworded for a first-time reader --------------------------------------
 // a space between two sentences in English, none after a Chinese full stop
 const sp = () => (getLang() === "zh" ? "" : " ");
+// he / she for the participant being viewed (the data give each participant's sex)
+function pron(id) {
+  const f = (study.people.find((p) => p.participant === id) || {}).gender === "female";
+  return getLang() === "zh" ? { he: f ? "她" : "他" } : { he: f ? "she" : "he", his: f ? "her" : "his", him: f ? "her" : "him", himself: f ? "herself" : "himself" };
+}
 function revealBar(r, hasCheckin) {
-  const who = pid(state.person), when = dayLabel(state.focus, { weekday: false, year: false });
-  if (!hasCheckin) return `<div class="reveal-bar none">${icon("info")}<span>${esc(t("reveal.none", { id: who, day: when }))}</span></div>`;
+  const who = pid(state.person), when = dayLabel(state.focus, { weekday: false, year: false }), pr = pron(state.person);
+  if (!hasCheckin) return `<div class="reveal-bar none">${icon("info")}<span>${esc(t("rv.none", { id: who, day: when }))}</span></div>`;
   if (state.revealed) {
     const felt = at(person, "readiness", state.focus);
-    const g = finite(r.value) ? t("reveal.shown_gap", { words: gapWords(felt, r.value), expected: fmt(r.value, 1) }) : (getLang() === "zh" ? "。" : ".");
-    return `<div class="reveal-bar shown">${icon("check")}<span><strong>${esc(t("reveal.shown", { id: who, felt: fmt(felt, 0), day: when, gap: g }))}</strong>${sp()}${esc(t("reveal.green"))}</span>${hideButton()}</div>`;
+    let line = t("rv.shown_noexp", { id: who, felt: fmt(felt, 0) });
+    if (finite(r.value)) {
+      const g = felt - r.value;
+      const words = Math.abs(g) < 0.05 ? t("rv.gap_same") : t(g > 0 ? "rv.gap_up" : "rv.gap_down", { v: fmt(Math.abs(g), 1) });
+      line = t("rv.shown", { id: who, felt: fmt(felt, 0), expected: fmt(r.value, 1), gap: words });
+    }
+    // the study's one clear everyday habit, when it happened the night before this morning
+    const late = signalOn(person, "late0", state.focus) === 1;
+    const story = late ? `${sp()}${t("rv.story", { ...pr, time: clock(at(person, "start_hour", state.focus)) })}` : "";
+    return `<div class="reveal-bar shown">${icon("check")}<span><strong>${esc(line)}</strong>${esc(story)}${sp()}${esc(t("rv.green"))}</span>${hideButton()}</div>`;
   }
-  const value = finite(r.value) ? `${fmt(r.value, 1)}/10` : t("reveal.not_enough");
-  return `<div class="reveal-bar">${icon("info")}<span><strong>${esc(t("reveal.expected", { id: who, value }))}</strong>${sp()}${esc(t("reveal.prompt"))}</span>${revealButton()}</div>`;
+  const lead = finite(r.value) ? t("rv.guess", { id: who, value: fmt(r.value, 1), ...pr }) : t("rv.no_guess", { id: who, ...pr });
+  return `<div class="reveal-bar">${icon("info")}<span>${esc(lead)}</span>${revealButton()}</div>`;
 }
 
 // ---- the sidebar ----------------------------------------------------------------------------------------
@@ -180,14 +193,15 @@ function sidebar() {
 function head() {
   const zh = getLang() === "zh";
   const title = zh ? t("app.alt") : t("app.name"), alt = zh ? t("app.name") : t("app.alt");
-  // laptop first: the two names share one line, and the line under the purpose says what this is (a course
-  // assignment, shown as a web page) with the way to the brief, so a first-time reader knows where to start
+  // laptop first: the two names share one line; under them, three short lines a first-time reader needs (the
+  // question, what came out, who did what), then the data line with the way to the brief and to the methods
+  const rows = [["brief.q.h", "brief.q"], ["brief.f.h", "brief.f"], ["brief.r.h", "brief.r"]]
+    .map(([h, b]) => `<div class="brief-row"><dt>${esc(t(h))}</dt><dd>${esc(t(b))}</dd></div>`).join("");
   return `<div class="head"><div>
     <h1>${esc(title)} <span class="h1-alt" lang="${zh ? "en" : "zh-CN"}">${esc(alt)}</span></h1>
-    <p class="purpose">${esc(t("app.purpose"))}</p>
-    <p class="project-line"><span>${esc(t("app.project"))}</span>
-      ${state.page === "report" ? "" : `<a class="solves-link" href="${hashFor("report", "overview")}">${icon("doc", 16)}${esc(t("app.solves"))} ›</a>`}</p>
+    <dl class="brief">${rows}</dl>
     <p class="data-line"><span>${esc(t("app.data", { n: study.people.length, first: dayLabel(study.first, { weekday: false }), last: dayLabel(study.last, { weekday: false }) }))}</span>
+      ${state.page === "report" ? "" : `<a class="solves-link" href="${hashFor("report", "overview")}">${icon("doc", 16)}${esc(t("app.solves"))} ›</a>`}
       <button type="button" class="link-button" id="about-open">${icon("info", 16)}${esc(t("app.about"))}</button></p>
   </div></div>`;
 }
@@ -244,7 +258,7 @@ function overview(ctx) {
       detail: t("rd.green_ring"), spark: sparkSlot("readiness", label), badge: { kind: "shown", text: t("badge.revealed") } });
     else if (!finite(r.value)) body = cardBody({ value: "—", headline: t("rd.not_enough"), detail: t("rd.needs"), spark: sparkSlot("readiness", label) });
     else body = cardBody({ value: fmt(r.value, 1), unit: t("rd.expected_unit"), headline: t("rd.mostly", { level: fmt(r.level.value, 1) }),
-      detail: t("rd.changes", { adj: dev(r.adjustment, 2) }) + t(ctx.hasCheckin ? "rd.reveal_to_check" : "rd.no_checkin"), spark: sparkSlot("readiness", label), badge: { kind: "estimate", text: t("badge.expected") } });
+      detail: (Math.abs(r.adjustment) < 0.005 ? t("rd.changes0") : t("rd.changes", { adj: dev(r.adjustment, 2) })) + t(ctx.hasCheckin ? "rd.reveal_to_check" : "rd.no_checkin"), spark: sparkSlot("readiness", label), badge: { kind: "estimate", text: t("badge.expected") } });
     cards.push(card("readiness", "pulse", t("card.readiness"), t("card.readiness_when"), body, "readiness-card"));
   }
   // last night's sleep (the full record: sleep is not part of the hidden check-in)
@@ -302,12 +316,12 @@ function overview(ctx) {
     const row = f && f.status === "ok" ? study.load_soreness.find((x) => x.band === f.band) : null;
     const actual = ctx.revealedValue("soreness");
     sparks.soreness = { fn: (w) => sparkLikert(dates, series(pv, "soreness", dates), focus, w) };
-    const typical = row ? t("so.typical", { pct: Math.round(row.worse * 100), band: t(`band.phrase.${row.band}`) }) : t("so.no_band");
+    const typical = row ? t("so.typical", { pct: Math.round(row.worse * 100), after: t(`so.after.${row.band}`) }) : t("so.no_band");
     let body;
     if (finite(actual)) body = cardBody({ value: fmt(actual, 0), unit: t("so.unit", { word: t(`so.word.${actual}`) }), headline: t("so.felt"), detail: t("so.compare", { typical }),
       spark: sparkSlot("soreness", t("so.spark")), badge: { kind: "shown", text: t("badge.revealed") } });
     else if (!row) body = cardBody({ value: "—", headline: typical, detail: t(`so.status.${f ? f.status : "none"}`), spark: sparkSlot("soreness", t("so.spark")) });
-    else body = cardBody({ value: `${Math.round(row.worse * 100)}%`, unit: t("so.share_unit"), headline: t("so.hist", { band: t(`band.phrase.${row.band}`) }),
+    else body = cardBody({ value: `${Math.round(row.worse * 100)}%`, unit: t("so.share_unit"), headline: t("so.hist", { after: t(`so.after.${row.band}`) }),
       detail: t("so.cells", { n: fmt(row.n) }), spark: sparkSlot("soreness", t("so.spark")), badge: { kind: "estimate", text: t("badge.history") } });
     cards.push(card("soreness", "body", t("card.soreness"), t("card.soreness_when"), body, "soreness-card"));
   }
@@ -317,7 +331,7 @@ function overview(ctx) {
     const text = k.clear ? t("kf.text", { habits: k.habits, count: t(`kf.count.${Math.min(k.clear, 3)}`), have: t(k.clear === 1 ? "kf.has" : "kf.have"),
       label: getLang() === "en" ? t(`lever.${k.key}`).toLowerCase() : t(`lever.${k.key}`), effect: dev(k.effect, 2), people: k.people }).replace(/\s+,/, ",").replace(/ {2,}/g, " ")
       : t("kf.none", { habits: k.habits });
-    cards.push(`<div class="home-card insight-card"><div class="home-card-title">${icon("bulb")}<span class="home-card-name"><span>${esc(t("card.key"))}</span><span class="card-when">${esc(t("card.key_when"))}</span></span></div>
+    cards.unshift(`<div class="home-card insight-card"><div class="home-card-title">${icon("bulb")}<span class="home-card-name"><span>${esc(t("card.key"))}</span><span class="card-when">${esc(t("card.key_when"))}</span></span></div>
       <div class="home-card-body"><div class="home-card-value"><strong>${esc(k.clear ? dev(k.effect, 2) : "—")}</strong><span>${esc(t("kf.unit"))}</span></div>
       <p>${esc(text)}</p><small>${esc(k.clear ? t("kf.compare", { tests: k.tests }) : t("kf.none_compare"))}</small>
       <a class="insight-link" href="${hashFor("choices", "overview")}">${esc(t("kf.link"))}</a></div></div>`);

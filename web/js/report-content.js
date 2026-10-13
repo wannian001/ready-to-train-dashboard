@@ -4,7 +4,7 @@
 
 export const REPORT = {
   en: {
-    note: "The design summary submitted with the R Shiny app on 22 September 2026, in full: the summary page and the appendix. Only the student number is left out. It describes the R version, and the figures are screenshots of it.",
+    note: "The design summary submitted with the R Shiny app on 22 September 2026, in full: the summary page and the appendix. Only the student number is left out. It describes the R version, and the figures are screenshots of it. Section 1 refers to a personal project of mine, a “personal digital twin”; this assignment redesigns the part of it that holds the data.",
     pdf: "Download the PDF",
     title: "Ready to Train?",
     titleSuffix: "— design summary",
@@ -83,7 +83,7 @@ export const REPORT = {
   },
 
   zh: {
-    note: "2026 年 9 月 22 日随 R Shiny 应用一起提交的设计说明，全文照录：说明页和附录页都在，只去掉了学号。它写的是 R 原版，配图是原版的截图。下面的中文是翻译，原文是英文。",
+    note: "2026 年 9 月 22 日随 R Shiny 应用一起提交的设计说明，全文照录：说明页和附录页都在，只去掉了学号。它写的是 R 原版，配图是原版的截图。第 1 节说的“个人数字孪生”是我自己在做的一个项目，这份作业重新设计的是其中管数据的部分。下面的中文是翻译，原文是英文。",
     pdf: "下载英文原文 PDF",
     title: "Ready to Train?",
     titleSuffix: "— 设计说明",
@@ -179,10 +179,10 @@ export const BRIEF = {
         "<b>For whom:</b> people who log their training, sleep and how they feel each day (recreational athletes, regular gym-goers) and their coaches.",
         "<b>Their questions:</b> How is the body today? Which records is that judgement based on? Which habits go with a better next day?",
         "<b>The idea tested:</b> an app that asks for a check-in only now and then could still say what to expect each morning. So the dashboard shows the <i>expected</i> readiness first, then reveals how the person actually felt.",
-        "<b>Data:</b> PMData, 16 people, November 2019 to April 2020 (Fitbit, morning check-ins, training logs, a food questionnaire); NHANES as outside context for sleep."] },
+        "<b>Data:</b> PMData, 16 people, November 2019 to April 2020 (Fitbit, morning check-ins, training logs, a food questionnaire); NHANES (a US national health survey) as outside context for sleep."] },
       { h: "What came out", items: [
         "Three pages: <b>Today</b> (five snapshot cards, each with a detail view), <b>Everyday habits</b> (18 habits and next-morning readiness) and <b>Compare habits</b> (one participant among the others). Every number is tagged as a record, an association or a concept demo.",
-        "<b>Findings:</b> of 16 everyday habits, only going to bed 1 h+ later than usual has a clear link with next-morning readiness (0.46 points lower, BH-adjusted p &lt; .05). Tracked data barely changes the expectation: hold-out error 1.01 points, the same as the usual level alone.",
+        "<b>Findings:</b> of 16 everyday habits, only going to bed 1 h+ later than usual has a clear link with next-morning readiness, 0.46 points lower on average, and the link still holds after allowing for testing many habits at once. The tracker and training log barely change the expectation: checked on March 2020 records that were not used to fit the model, it was off by 1.01 points on average, the same as the usual level alone.",
         "<b>Mark:</b> not yet released."] },
     ],
     tryIt: "Try it:",
@@ -202,10 +202,10 @@ export const BRIEF = {
         "<b>给谁用：</b>每天记录训练、睡眠和自我感受的人（业余运动员、常去健身房的人）和他们的教练。",
         "<b>他们想知道：</b>今天身体怎么样？这个判断依据哪些记录？哪些习惯和更好的第二天相伴？",
         "<b>要验证的想法：</b>一个只偶尔请人填自评的 App，每天早上也能说出预期会怎样。所以看板先给出<i>预期</i>的准备度，再揭晓这个人当天的真实感受。",
-        "<b>数据：</b>PMData，16 人，2019 年 11 月到 2020 年 4 月（Fitbit、晨间自评、训练日志、饮食问卷）；NHANES 作睡眠的外部参照。"] },
+        "<b>数据：</b>PMData，16 人，2019 年 11 月到 2020 年 4 月（Fitbit、晨间自评、训练日志、饮食问卷）；NHANES（美国全国健康调查）作睡眠的外部参照。"] },
       { h: "做出了什么", items: [
         "三页：<b>今天</b>（五张快照卡片，每张都能点开看详情）、<b>日常习惯</b>（18 个习惯和第二天早上的准备度）、<b>习惯对比</b>（一名参与者放在其他人中间）。每个数字都标明是记录、关联还是概念演示。",
-        "<b>发现：</b>16 个日常习惯里，只有比平常晚睡 1 小时以上和第二天早上的准备度有明确关联（低 0.46 分，BH 校正后 p &lt; .05）。追踪数据几乎不改变预期：留出集误差 1.01 分，和只用平常水平一样。",
+        "<b>发现：</b>16 个日常习惯里，只有比平常晚睡 1 小时以上和第二天早上的准备度有明确关联，平均低 0.46 分，同时检验多个习惯之后仍然成立。手环和训练记录几乎不改变预期：拿没用来拟合模型的 2020 年 3 月记录检验，平均差 1.01 分，和只用平常水平一样。",
         "<b>分数：</b>待发布。"] },
     ],
     tryIt: "去看看：",

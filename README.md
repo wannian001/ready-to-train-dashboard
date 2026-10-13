@@ -13,13 +13,15 @@ How sleep, training and everyday habits line up with feeling ready to train: 16 
 
 ![Web version, light mode: the Today page with its six cards](screenshots/web_today_light_en.png)
 
+**In short**
+
+- **Question.** Can an app that doesn't ask you every day still guess how ready to train you'll say you feel, from your usual level, your fitness tracker and your training log?
+- **Finding.** The guess rests almost entirely on your usual level; adding the tracker and the training log doesn't make it more accurate (both guesses are off by about 1 point out of 10). Of 16 everyday habits, only going to bed 1 h+ later than usual goes with a clearly worse next morning, 0.46 points lower on average.
+- **My part.** I set the question, designed the interaction and the charts, and checked every number; AI coding assistants wrote the R code.
+
 A solo assignment for GEOM90007 Information Visualisation at the University of Melbourne, built in R Shiny in September 2026. Mark: not yet released.
 
 In October 2026 a [web version](#web-version) was added that opens in any browser without R. The submitted app in `app/` is unchanged.
-
-### The assignment
-
-Build one interactive data visualisation interface in R Shiny on a real dataset of your own choice. It had to serve a defined purpose and audience, contain two or more data graphics (at least one interactive), offer at least one interaction beyond Shiny's built-in defaults, and follow the course's principles of interaction design, cartography and data graphics. It came with a one-page design summary justifying the design choices, plus an appendix of sources. Individual, 20% of the subject, marked on data correspondence (25), data integrity (15), data density and aesthetics (25), technical challenge and interaction design (25) and the design summary (10). The [Design summary page](https://wannian001.github.io/ready-to-train-dashboard/#report) opens with this brief, the problem chosen and what came out.
 
 ### The problem
 
@@ -30,17 +32,21 @@ The audience is people who log their training, sleep and how they feel each day 
 - Data: the public PMData dataset, 16 participants, 1 November 2019 to 1 April 2020: Fitbit sleep, steps and resting heart rate, morning check-ins and training logs.
 - Three pages:
   - **Today**: pick a participant and a day. Six cards show readiness, last night's sleep, yesterday's training, steps, soreness and the study-wide key finding. The dashboard first shows the readiness expected from the person's usual level, then reveals the actual check-in.
-  - **Everyday habits**: 18 habits and conditions, each compared with next-morning readiness. Each participant's own average is removed first; intervals are clustered by participant; p-values are BH-adjusted.
+  - **Everyday habits**: 16 everyday habits plus 2 reference states (18 rows), each compared with next-morning readiness. Each participant's own average is removed first; intervals are clustered by participant; p-values are BH-adjusted.
   - **Compare habits**: this participant against the others, with NHANES 2017–March 2020 sleep survey data as outside context.
 - Every number is tagged as a record, an association or a concept demo, and every card states its time window.
 
-![The R Shiny app's Everyday habits page: 18 habits and next-morning readiness; only "go to bed 1 h+ later than usual" is a clear link](screenshots/everyday_habits.png)
+![The R Shiny app's Everyday habits page: 16 everyday habits plus 2 reference states and next-morning readiness; only "go to bed 1 h+ later than usual" is a clear link](screenshots/everyday_habits.png)
 
 ### Result
 
 - Of 16 everyday habits, only "go to bed 1 h+ later than usual" has a clear link with next-morning readiness: 0.46 points lower on a 10-point scale, BH-adjusted p < .05. This is an association, not a cause.
 - Adding Fitbit and training data barely changes the expected readiness; it mostly follows each person's own usual level. The dashboard says so.
 - The mark will be added here once released.
+
+### The assignment
+
+Build one interactive data visualisation interface in R Shiny on a real dataset of your own choice. It had to serve a defined purpose and audience, contain two or more data graphics (at least one interactive), offer at least one interaction beyond Shiny's built-in defaults, and follow the course's principles of interaction design, cartography and data graphics. It came with a one-page design summary justifying the design choices, plus an appendix of sources. Individual, 20% of the subject, marked on data correspondence (25), data integrity (15), data density and aesthetics (25), technical challenge and interaction design (25) and the design summary (10). The [Design summary page](https://wannian001.github.io/ready-to-train-dashboard/#report) opens with this brief, the problem chosen and what came out.
 
 ### Web version
 
@@ -53,7 +59,7 @@ The audience is people who log their training, sleep and how they feel each day 
 
 - Same numbers. `tools/export_web.R` runs the app's own R code and writes every statistic it computes (the within-person estimates, BH corrections, the expected-readiness model, cohorts, body-region shares) to `web/data/`. What depends on the chosen day or a control (the usual level, the expected readiness, load windows, the energy ledger, the last five nights) is recalculated in the browser, and `tests/` checks it against R's own output for every participant-day: the numbers, the sentences and the tables.
 - Same rules. The selected day's check-in stays out of the page, its tooltips and its tables until you press Reveal.
-- What is new: the look and the colours (one hue per thing measured, kept apart from status colours), the Chinese text, and a few edge-case fixes: a day with a check-in but no soreness answer now says so instead of "hidden until you reveal", and the readiness waterfall labels the final expected value.
+- What is new: the look and the colours (one hue per thing measured, kept apart from status colours), the Chinese text, plainer wording on the front page and in the chart legends for first-time readers (the numbers and the analyses are the R app's), and a few edge-case fixes: a day with a check-in but no soreness answer now says so instead of "hidden until you reveal", and the readiness waterfall labels the final expected value.
 - The **Design summary** page holds the design summary submitted with the app, word for word: the summary page with its four figures and the appendix of resources, plus a Chinese translation.
 - No server and no R: the data is about 0.9 MB of JSON; the body figures are the app's own images.
 
@@ -95,15 +101,17 @@ Shared as a portfolio piece. There is no open licence; please don't reuse it for
 
 ## 中文
 
+**一句话说明**
+
+- **想回答：** 一个不每天问你状态的 App，只看你平常的水平、手环和训练记录，能不能猜出你今天会给“准备好训练了吗”打几分？
+- **发现：** 猜的时候起作用的几乎只有你平常的水平，加上手环和训练记录也没有更准，两种猜法满分 10 分都平均差 1 分左右。16 个日常习惯里，只有“比平常晚睡 1 小时以上”和第二天早上状态变差明确相关，平均低 0.46 分。
+- **我做的：** 定问题、设计交互和图表、逐个核对数字；R 代码由 AI 编程助手编写。
+
 墨尔本大学 GEOM90007 信息可视化课程的个人作业，2026 年 9 月用 R Shiny 完成。得分：待发布。
 
 2026 年 10 月加了一个[网页版](#网页版)，不用装 R，浏览器直接打开。`app/` 里提交的原版没有改动。
 
-![网页版，中文、深色模式：18 个日常习惯和第二天早上的准备度](screenshots/web_choices_dark_zh.png)
-
-### 作业要求
-
-用 R Shiny 做一个交互式数据可视化界面，数据必须真实、由自己选。界面要服务一个明确的目的和受众；至少两个数据图形，其中至少一个可以交互；至少一种超出 Shiny 内建默认的交互；设计要依据课上讲的交互设计、制图和数据图形原则。另交一页设计说明，论证每个设计选择，并附上来源附录。个人作业，占总成绩 20%，评分维度是数据对应（25）、数据诚实（15）、数据密度与美观（25）、技术难度与交互设计（25）、设计说明（10）。网页版的[设计说明页](https://wannian001.github.io/ready-to-train-dashboard/#report)开头就是这份作业要求、我选的问题和做出了什么。
+![网页版，中文、深色模式：16 个日常习惯（另有 2 个参照状态）和第二天早上的准备度](screenshots/web_choices_dark_zh.png)
 
 ### 这个看板解决什么问题
 
@@ -120,7 +128,7 @@ Shared as a portfolio piece. There is no open licence; please don't reuse it for
 - 用公开数据集 PMData：16 名参与者，2019 年 11 月 1 日到 2020 年 4 月 1 日，包括 Fitbit 睡眠、步数、静息心率，晨间自评和训练日志。
 - 分三页：
   - **Today**：选一名参与者和一天，六张卡片分别显示自评状态、前一晚睡眠、前一天训练、步数、酸痛和全体的关键发现。先给出按平常水平估计的状态，再点开当天真实的自评。
-  - **Everyday habits**：把 18 项习惯和条件分别与第二天的自评状态对比。先减去每个人自己的平均值，置信区间按参与者聚类，多重检验用 BH 校正。
+  - **Everyday habits**：把 16 个日常习惯和 2 个参照状态（共 18 行）分别与第二天的自评状态对比。先减去每个人自己的平均值，置信区间按参与者聚类，多重检验用 BH 校正。
   - **Compare habits**：把这名参与者和其他人比，另用 NHANES 2017～2020 年 3 月的睡眠调查数据作外部参照。
 - 每个数字都标明类型：记录值、关联，还是概念演示。每张卡片都写明时间范围。
 
@@ -132,13 +140,17 @@ Shared as a portfolio piece. There is no open licence; please don't reuse it for
 - 加上 Fitbit 和训练记录以后，估计值几乎不变，主要还是跟着每个人自己的平常水平走。看板把这一点直接写了出来。
 - 分数发布后补在这里。
 
+### 作业要求
+
+用 R Shiny 做一个交互式数据可视化界面，数据必须真实、由自己选。界面要服务一个明确的目的和受众；至少两个数据图形，其中至少一个可以交互；至少一种超出 Shiny 内建默认的交互；设计要依据课上讲的交互设计、制图和数据图形原则。另交一页设计说明，论证每个设计选择，并附上来源附录。个人作业，占总成绩 20%，评分维度是数据对应（25）、数据诚实（15）、数据密度与美观（25）、技术难度与交互设计（25）、设计说明（10）。网页版的[设计说明页](https://wannian001.github.io/ready-to-train-dashboard/#report)开头就是这份作业要求、我选的问题和做出了什么。
+
 ### 网页版
 
 **[打开](https://wannian001.github.io/ready-to-train-dashboard/)**。`web/` 把同样的三页做成静态网页，每张卡片、每张图、每段说明和“查看数据”表格都在。外观用 [dayring 设计套件](https://github.com/wannian001/dayring/blob/main/docs/DESIGN_KIT.md)（1.3.0）：标题中英两行，其余跟着“中文 / EN”按钮切换（第一次打开按浏览器语言），浅色深色跟随系统，手机和电脑都能用。
 
 - 数字一样。`tools/export_web.R` 运行应用自己的 R 代码，把它算出的每个统计量（个人内部估计、BH 校正、预期准备度模型、对照人群、身体部位比例）写进 `web/data/`。随选中的日子或控件变化的部分（平常水平、预期准备度、负荷窗口、能量账本、最近五晚）在浏览器里重新算，`tests/` 逐个参与者日拿它和 R 的原始输出核对：数字、句子和表格。
 - 规则一样。按下“揭晓自评”之前，选中那天的自评不会出现在页面、提示框和表格里。
-- 新加的：外观和配色（每种被测的东西一个颜色，和表示状态的颜色分开）、中文，以及几处边角情况的修正：有自评但没答酸痛的那天，现在会直接说明，不再写“揭晓前隐藏”；预期准备度的瀑布图标出了最终的预期值。
+- 新加的：外观和配色（每种被测的东西一个颜色，和表示状态的颜色分开）、中文，首页和图例的措辞为第一次看的人改得更直白（数字和分析都和 R 原版一样），以及几处边角情况的修正：有自评但没答酸痛的那天，现在会直接说明，不再写“揭晓前隐藏”；预期准备度的瀑布图标出了最终的预期值。
 - **设计说明**页放的是随应用一起提交的设计说明，逐字照录：说明页、四张配图和资源附录都在，另有中文译文。
 - 不用服务器，也不用 R：数据是大约 0.9 MB 的 JSON，人体图用的是原版的图片。
 
