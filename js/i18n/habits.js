@@ -131,6 +131,7 @@ export const WORDS = {
     "po.t1.hours": "Hours", "po.t1.share": "Share",
     "po.t2.caption": "This participant's 5 most recent matching nights before the selected day (Fitbit main sleep)",
     "po.t2.date": "Date", "po.t2.sleep": "Sleep",
+    "hb.short_note": "“Slept 1 h+ less than usual” comes from the tracker signals on the Readiness page, not from the 16 everyday habits (those count sleep of 7, 8 or 9 hours or more). That is why the front page says only one everyday habit has a clear link.",
   },
   zh: {
     "hb.title": "{id} 的作息和其他参与者比起来怎样？",
@@ -257,6 +258,7 @@ export const WORDS = {
     "po.t1.hours": "小时", "po.t1.share": "比例",
     "po.t2.caption": "这名参与者在所选日期之前最近 5 个同类晚上（Fitbit 主睡眠）",
     "po.t2.date": "日期", "po.t2.sleep": "睡眠",
+    "hb.short_note": "“比平常少睡 1 小时以上”来自“准备度”页的手环信号，不在 16 个日常习惯里（日常习惯看的是睡够 7、8、9 小时）。所以首页说日常习惯里只有一个有明确关联。",
   },
 };
 addWords(WORDS);

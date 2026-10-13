@@ -14,7 +14,7 @@ import "../i18n/habits.js";
 
 // ---- local view state (kept across renders) --------------------------------------------------------
 const view = { habit: null, period: "workday", radius: 5 };
-const folds = { detail: false, peers: true, population: false };   // the R app opens "Ten more ways" by default
+const folds = { detail: false, peers: false, population: false };   // "Ten more ways" starts folded on the web (open in the R app): a first-time reader stops at it
 const tables = {};                                                  // "Show the data" folds left open, by chart id
 
 // ---- numbers written the R app's way ------------------------------------------------------------------
@@ -414,7 +414,8 @@ function profileSummaryHtml(data, id) {
   return `<div class="habit-profile-summary">
     <div class="card-top"><h3>${esc(t("hb.glance", { id: pid(id) }))}</h3><span class="subtle-tag">${esc(t("hb.glance_tag"))}</span></div>
     <div class="habit-count-grid">${chips.map((c) => `<div class="habit-count-chip"><span>${esc(c.label)}</span><strong>${esc(c.pct)}</strong>
-      <small>${esc(c.days)}</small><small class="habit-link ${c.clear ? "clear" : "none"}">${esc(c.link)}</small></div>`).join("")}</div></div>`;
+      <small>${esc(c.days)}</small><small class="habit-link ${c.clear ? "clear" : "none"}">${esc(c.link)}</small></div>`).join("")}</div>
+    ${chips.some((c) => c.habit === "short" && c.clear) ? `<p class="fine-print">${esc(t("hb.short_note"))}</p>` : ""}</div>`;
 }
 const textTable = (caption, headers, rows) => dataTable(caption, headers, rows.map((r) => r.map((c) => esc(c))));
 
