@@ -87,7 +87,13 @@ for (const r of today) assert.equal(verdict(r, r.clear, "day"), ref.today_verdic
 for (const r of levers) assert.equal(verdict(r, r.effective, "next"), ref.lever_verdict[r.key], `verdict ${r.key}`);
 assert.equal(bhNote(today, (r) => r.clear, "signals", sig), ref.today_bh, "BH note, tracked signals");
 assert.equal(bhNote(levers, (r) => r.effective, "rows", lev), ref.lever_bh, "BH note, everyday habits");
-assert.equal(t("chs.tag", { k: levers.filter((e) => e.effective).length, n: levers.filter((e) => fin(e.effect)).length }), ref.levers_tag, "levers tag");
+// the web tag splits R's count into 16 habits + 2 reference states; the counts are R's ("1 of 18 with a clear link")
+{
+  const k = levers.filter((e) => e.effective).length, n = levers.filter((e) => fin(e.effect)).length;
+  const refs = levers.filter((e) => e.group === study.lever_groups.at(-1) && fin(e.effect)).length;
+  assert.equal(`${k} of ${n} with a clear link`, ref.levers_tag, "levers tag counts");
+  assert.equal(t("chs.tag", { k, habits: n - refs, refs }), `${k} of 16 habits + 2 reference states with a clear link`, "levers tag");
+}
 for (const r of [...today, ...levers]) assert.equal(g2(r.p_bh), ref.p_bh_g[r.key].trim(), `BH p ${r.key}`);
 assert.equal(factorsConclusion(today), ref.factors_conclusion, "factors conclusion");
 for (const [k, pat] of [["ridge", "ridge"], ["level", "^level$"], ["level_all", "level_all"], ["last5", "last5"]]) assert.equal(modelMae(study, "test", pat), ref.mae[k], `MAE ${k}`);

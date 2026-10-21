@@ -180,6 +180,8 @@ export const binRows = (c) => c.bins.map(([bin, pct]) => [binLabel(bin), `${cfix
 
 // ---- chart helpers ------------------------------------------------------------------------------------------
 const textW = (s, size) => [...String(s)].reduce((w, ch) => w + (/[⺀-鿿＀-￯]/.test(ch) ? size : size * 0.56), 0);
+// chart text: 13px on a laptop, 12px on a phone (the marker's comment: some labels were too small)
+const fsOf = (width) => (width < 480 ? 12 : 13);
 const tip = (lines) => esc(lines.filter((x) => x !== "" && x !== null && x !== undefined).join("\n")).replace(/\n/g, "&#10;");
 const f1 = (v) => (Math.round(v * 10) / 10).toString();
 const empty = (width, height, lines) => `<svg viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="img" aria-label="${esc(lines.join(". "))}">
@@ -226,7 +228,7 @@ export function habitDotsSvg(data, id, cmp, width, height = 680) {
   const out = [];
   data.specs.forEach((s, i) => {
     const title = narrow ? label(s.id) : t("hb.dots.panel", { label: label(s.id) });
-    out.push(`<text x="${padL}" y="${(panelTop(i) - 7).toFixed(1)}" font-size="12.5" fill="var(--ink)">${esc(title)}</text>`);
+    out.push(`<text x="${padL}" y="${(panelTop(i) - 7).toFixed(1)}" font-size="${fsOf(width) + 0.5}" fill="var(--ink)">${esc(title)}</text>`);
     [0, 25, 50, 75, 100].forEach((g) => out.push(`<line x1="${x(g).toFixed(1)}" x2="${x(g).toFixed(1)}" y1="${panelTop(i).toFixed(1)}" y2="${(panelTop(i) + panelH).toFixed(1)}" stroke="var(--line)" stroke-width="1"/>`));
   });
   const R = { other: 4.2, compare: 5.2, me: 5.6 };
@@ -241,11 +243,11 @@ export function habitDotsSvg(data, id, cmp, width, height = 680) {
     out.push(r.role === "me" ? `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="9" fill="none" stroke="var(--ink)" stroke-width="1.6" pointer-events="none"/>`
       : `<rect x="${(cx - 8.5).toFixed(1)}" y="${(cy - 8.5).toFixed(1)}" width="17" height="17" fill="none" stroke="var(--ink)" stroke-width="1.5" pointer-events="none"/>`);
     const ly = y(r.panel, r.role === "me" ? -0.95 : -1.65) + 4;
-    out.push(`<text x="${cx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor(r.share)}" font-size="${r.role === "me" ? 11.5 : 11}" ${r.role === "me" ? 'font-weight="700" fill="var(--c-expected)"' : 'fill="var(--ink)"'} pointer-events="none">${esc(`${pid(r.participant)} ${rint(r.share)}%`)}</text>`);
+    out.push(`<text x="${cx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor(r.share)}" font-size="${fsOf(width) + (r.role === "me" ? 0.5 : 0)}" ${r.role === "me" ? 'font-weight="700" fill="var(--c-expected)"' : 'fill="var(--ink)"'} pointer-events="none">${esc(`${pid(r.participant)} ${rint(r.share)}%`)}</text>`);
   });
   const axisY = panelTop(4) + panelH;
-  [0, 25, 50, 75, 100].forEach((g) => out.push(`<text x="${x(g).toFixed(1)}" y="${(axisY + 17).toFixed(1)}" text-anchor="middle" font-size="12" fill="var(--ink-3)">${g}%</text>`));
-  out.push(`<text x="${((x(-3) + x(103)) / 2).toFixed(1)}" y="${(axisY + 37).toFixed(1)}" text-anchor="middle" font-size="12" fill="var(--ink-3)">${esc(t(narrow ? "hb.dots.x_narrow" : "hb.dots.x"))}</text>`);
+  [0, 25, 50, 75, 100].forEach((g) => out.push(`<text x="${x(g).toFixed(1)}" y="${(axisY + 17).toFixed(1)}" text-anchor="middle" font-size="${fsOf(width)}" fill="var(--ink-3)">${g}%</text>`));
+  out.push(`<text x="${((x(-3) + x(103)) / 2).toFixed(1)}" y="${(axisY + 37).toFixed(1)}" text-anchor="middle" font-size="${fsOf(width)}" fill="var(--ink-3)">${esc(t(narrow ? "hb.dots.x_narrow" : "hb.dots.x"))}</text>`);
   return `<svg class="hb-svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="group" aria-label="${esc(t("hb.dots.label"))}">${out.join("")}</svg>`;
 }
 
@@ -257,7 +259,7 @@ export function habitDetailSvg(data, h, id, cmp, width, height = 430) {
   const narrow = width < 480;
   const rowLab = (r) => t("hb.detail.row", { id: pid(r.participant), num: r.num, den: r.den,
     role: r.participant === id ? t("hb.detail.viewing") : r.participant === cmp ? t("hb.detail.comparison") : "" });
-  const fs = narrow ? 11 : 12;
+  const fs = fsOf(width);
   const leftW = Math.min(width * 0.5, Math.max(...z.map((r) => textW(rowLab(r), fs))) + 14);
   const padR = 10, top0 = 6, axisH = 30;
   const x = (v) => leftW + (v / 110) * (width - leftW - padR);
@@ -280,15 +282,15 @@ export function habitDetailSvg(data, h, id, cmp, width, height = 430) {
     const lines = [pid(r.participant), t("hb.tip.share", { label: label(h), num: r.num, den: r.den, pct: cfix(r.share, 0) }), role === "other" ? t("hb.tip.other") : ""];
     const mark = role === "compare" ? `<rect x="${(cx - 4.6).toFixed(1)}" y="${(cy - 4.6).toFixed(1)}" width="9.2" height="9.2" fill="var(--ink)"/>`
       : `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="4.8" fill="${role === "me" ? "var(--c-expected)" : "var(--c-gap)"}"/>`;
-    const right = r.share > 90, lx = x(right ? r.share - gap : r.share + gap), txt = `${rint(r.share)}%`, tw = textW(txt, 11) + 4;
+    const right = r.share > 90, lx = x(right ? r.share - gap : r.share + gap), txt = `${rint(r.share)}%`, tw = textW(txt, fs) + 4;
     out.push(`<g class="hb-row ${role}" data-tip="${tip(lines)}" ${pick(r.participant, role, lines.slice(0, 2).join(", "))}>
       <rect x="0" y="${(cy - rowH / 2).toFixed(1)}" width="${width}" height="${rowH.toFixed(1)}" fill="transparent"/>
       <text x="${(leftW - 8).toFixed(1)}" y="${(cy + 4).toFixed(1)}" text-anchor="end" font-size="${fs}" fill="var(--ink)"${role === "me" ? ' font-weight="650"' : ""}>${esc(rowLab(r))}</text>
       ${mark}
-      <rect x="${(right ? lx - tw + 2 : lx - 2).toFixed(1)}" y="${(cy - 7.5).toFixed(1)}" width="${tw.toFixed(1)}" height="15" rx="2" fill="var(--surface)"/>
-      <text x="${lx.toFixed(1)}" y="${(cy + 4).toFixed(1)}" text-anchor="${right ? "end" : "start"}" font-size="11" fill="var(--ink)">${txt}</text></g>`);
+      <rect x="${(right ? lx - tw + 2 : lx - 2).toFixed(1)}" y="${(cy - 8.5).toFixed(1)}" width="${tw.toFixed(1)}" height="17" rx="2" fill="var(--surface)"/>
+      <text x="${lx.toFixed(1)}" y="${(cy + 4).toFixed(1)}" text-anchor="${right ? "end" : "start"}" font-size="${fs}" fill="var(--ink)">${txt}</text></g>`);
   });
-  breaks.forEach((g) => out.push(`<text x="${x(g).toFixed(1)}" y="${(height - axisH + 19).toFixed(1)}" text-anchor="middle" font-size="12" fill="var(--ink-3)">${g}%</text>`));
+  breaks.forEach((g) => out.push(`<text x="${x(g).toFixed(1)}" y="${(height - axisH + 19).toFixed(1)}" text-anchor="middle" font-size="${fs}" fill="var(--ink-3)">${g}%</text>`));
   return `<svg class="hb-svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="group" aria-label="${esc(t("hb.detail.label"))}">${out.join("")}</svg>`;
 }
 
@@ -309,21 +311,21 @@ export function peerSvg(data, id, cmp, width) {
   const n = keys.length;
   let X, Y, labels = "";
   if (!narrow) {
-    const padL = 6, padR = 6, top0 = 8, axisH = 74;
+    const padL = 6, padR = 6, top0 = 8, axisH = 84;
     const x0 = (a) => padL + ((a - 0.55) / (n + 0.45 - 0.55)) * (width - padL - padR);
     const y0 = (p) => top0 + ((1.17 - p) / 1.34) * (height - top0 - axisH);
     X = (a) => x0(a); Y = (a, p) => y0(p);
-    const XX = (a) => x0(a);
+    const XX = (a) => x0(a), room = x0(2) - x0(1) - 8;
     labels = keys.map((k) => {
       const a = ax[k], [lo, hi] = range[k];
-      const words = getLang() === "zh" ? t(`pe.axis.${k}`).split("\n") : dimLabel(k).split(" ");
+      const words = getLang() === "zh" ? t(`pe.axis.${k}`).split("\n") : wrap(dimLabel(k), 13, room);
       return `<line x1="${XX(a).toFixed(1)}" x2="${XX(a).toFixed(1)}" y1="${y0(0).toFixed(1)}" y2="${y0(1).toFixed(1)}" stroke="var(--line-2)" stroke-width="1.2"/>
-        <text x="${XX(a).toFixed(1)}" y="${(y0(-0.085) + 4).toFixed(1)}" text-anchor="middle" font-size="10.5" fill="var(--ink-3)">${esc(peerValueLabel(lo, unit[k]))}</text>
-        <text x="${XX(a).toFixed(1)}" y="${(y0(1.085) + 4).toFixed(1)}" text-anchor="middle" font-size="10.5" fill="var(--ink-3)">${esc(peerValueLabel(hi, unit[k]))}</text>
-        <text x="${XX(a).toFixed(1)}" y="${(height - axisH + 18).toFixed(1)}" text-anchor="middle" font-size="11" fill="var(--ink)">${words.map((w, i) => `<tspan x="${XX(a).toFixed(1)}" dy="${i ? 12.5 : 0}">${esc(w)}</tspan>`).join("")}</text>`;
+        <text x="${XX(a).toFixed(1)}" y="${(y0(-0.085) + 4).toFixed(1)}" text-anchor="middle" font-size="13" fill="var(--ink-3)">${esc(peerValueLabel(lo, unit[k]))}</text>
+        <text x="${XX(a).toFixed(1)}" y="${(y0(1.085) + 4).toFixed(1)}" text-anchor="middle" font-size="13" fill="var(--ink-3)">${esc(peerValueLabel(hi, unit[k]))}</text>
+        <text x="${XX(a).toFixed(1)}" y="${(height - axisH + 18).toFixed(1)}" text-anchor="middle" font-size="13" fill="var(--ink)">${words.map((w, i) => `<tspan x="${XX(a).toFixed(1)}" dy="${i ? 15 : 0}">${esc(w)}</tspan>`).join("")}</text>`;
     }).join("");
   } else {
-    const fs = 11, labW = Math.min(width * 0.44, 170);
+    const fs = 12, labW = Math.min(width * 0.44, 170);
     const top0 = 4, bottom0 = 4, rowH = (height - top0 - bottom0) / n;
     const px0 = labW + 10, px1 = width - 8;
     const xp = (p) => px0 + ((p + 0.03) / 1.06) * (px1 - px0);
@@ -333,10 +335,10 @@ export function peerSvg(data, id, cmp, width) {
       const a = ax[k], [lo, hi] = range[k];
       const lines = wrap(dimLabel(k), fs, labW);
       const rng = t("pe.row_range", { lo: peerValueLabel(lo, unit[k]), hi: peerValueLabel(hi, unit[k]) });
-      const all = [...lines.map((s) => [s, "var(--ink)", fs]), ...wrap(rng, 10.5, labW).map((s) => [s, "var(--ink-3)", 10.5])];
-      const y1 = yr(a) - ((all.length - 1) * 13) / 2 + 4;
+      const all = [...lines.map((s) => [s, "var(--ink)", fs]), ...wrap(rng, 12, labW).map((s) => [s, "var(--ink-3)", 12])];
+      const y1 = yr(a) - ((all.length - 1) * 15) / 2 + 4;
       return `<line x1="${xp(0).toFixed(1)}" x2="${xp(1).toFixed(1)}" y1="${yr(a).toFixed(1)}" y2="${yr(a).toFixed(1)}" stroke="var(--line-2)" stroke-width="1.2"/>
-        ${all.map(([s, c, size], i) => `<text x="0" y="${(y1 + i * 13).toFixed(1)}" font-size="${size}" fill="${c}">${esc(s)}</text>`).join("")}`;
+        ${all.map(([s, c, size], i) => `<text x="0" y="${(y1 + i * 15).toFixed(1)}" font-size="${size}" fill="${c}">${esc(s)}</text>`).join("")}`;
     }).join("");
   }
   const pt = (x) => (narrow ? [X(ax[x.key], pos(x)), Y(ax[x.key])] : [X(ax[x.key]), Y(ax[x.key], pos(x))]);
@@ -384,7 +386,7 @@ export function populationSvg(c, nights, who, width, height = 260) {
   const out = [];
   c.ticks.filter((v) => v <= top + 1e-9).forEach((v) => {
     out.push(`<line x1="${padL}" x2="${width - padR}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" stroke="var(--line)" stroke-width="1"/>`);
-    out.push(`<text x="${padL - 6}" y="${(y(v) + 4).toFixed(1)}" text-anchor="end" font-size="12" fill="var(--ink-3)">${v}%</text>`);
+    out.push(`<text x="${padL - 6}" y="${(y(v) + 4).toFixed(1)}" text-anchor="end" font-size="${fsOf(width)}" fill="var(--ink-3)">${v}%</text>`);
   });
   c.bins.forEach(([bin, pct]) => {
     const x0 = x(bin + 0.5 - 0.43), x1 = x(bin + 0.5 + 0.43);
@@ -392,7 +394,7 @@ export function populationSvg(c, nights, who, width, height = 260) {
       data-tip="${tip(t("po.tip.bin", { bin: binLabel(bin), pct: f1(rround(pct, 1)) }).split("\n"))}"/>`);
   });
   out.push(`<line x1="${padL}" x2="${width - padR}" y1="${y(0).toFixed(1)}" y2="${y(0).toFixed(1)}" stroke="var(--ink-3)" stroke-width="1"/>`);
-  out.push(`<text x="${x(2.05).toFixed(1)}" y="${(y(-top * 0.06) + 10).toFixed(1)}" font-size="${width < 480 ? 10 : 11}" fill="var(--c-sleep)">${esc(t("po.row", { id: who }))}</text>`);
+  out.push(`<text x="${x(2.05).toFixed(1)}" y="${(y(-top * 0.06) + 10).toFixed(1)}" font-size="${fsOf(width)}" fill="var(--c-sleep)">${esc(t("po.row", { id: who }))}</text>`);
   nights.forEach((r, i) => {
     const cx = x(Math.min(14.9, Math.max(2.1, r.hours))), cy = y(-top * (0.13 + i * 0.035));
     out.push(`<circle class="po-night" cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="4.8" fill="var(--c-sleep)" stroke="var(--surface)" stroke-width="1"
@@ -401,8 +403,8 @@ export function populationSvg(c, nights, who, width, height = 260) {
   });
   const ax = height - bottom0 + 18;
   [[2.5, "<3"], [4, "4"], [6, "6"], [8, "8"], [10, "10"], [12, "12"], [14.5, "14+"]].forEach(([v, s]) =>
-    out.push(`<text x="${x(v).toFixed(1)}" y="${ax}" text-anchor="middle" font-size="12" fill="var(--ink-3)">${esc(s)}</text>`));
-  out.push(`<text x="${((x(2) + x(15)) / 2).toFixed(1)}" y="${height - 5}" text-anchor="middle" font-size="12" fill="var(--ink-3)">${esc(t("po.x"))}</text>`);
+    out.push(`<text x="${x(v).toFixed(1)}" y="${ax}" text-anchor="middle" font-size="${fsOf(width)}" fill="var(--ink-3)">${esc(s)}</text>`));
+  out.push(`<text x="${((x(2) + x(15)) / 2).toFixed(1)}" y="${height - 5}" text-anchor="middle" font-size="${fsOf(width)}" fill="var(--ink-3)">${esc(t("po.x"))}</text>`);
   return `<svg class="hb-svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="group" aria-label="${esc(t("po.label"))}">${out.join("")}</svg>`;
 }
 

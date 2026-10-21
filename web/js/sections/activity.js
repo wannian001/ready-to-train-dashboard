@@ -7,9 +7,9 @@ import { draw, esc } from "../../kit/js/charts.js";
 import { t, fmt, rround, dur, dayLabel, shortDate, finite } from "../i18n.js";
 import "../i18n/training.js";
 import { addDays, indexOf, at, dayRange, wday } from "../model.js";
-import { metricHeading, cardTop, detailHeader, chartBox, dataTable, dayButton, evidenceTag } from "../ui.js";
+import { metricHeading, cardTop, detailHeader, chartBox, dataTable, dayButton, evidenceTag, info } from "../ui.js";
 import { loadAreaPerson } from "../data.js";
-import { textW, emptyChart, svgOpen, tipAttr, keepFolds } from "./training.js";
+import { textW, chartFs, emptyChart, svgOpen, tipAttr, keepFolds } from "./training.js";
 
 // ---- app.R activity_windows(): the selected day and the 7-day and 4-week averages ----------------------------------
 export function activityWindows(p, day) {
@@ -50,7 +50,7 @@ function heatmap(h, day, span, w) {
   const short = span <= 14;
   const rowLabel = (d) => (short ? dayLabel(d, { year: false }) : shortDate(d));
   const labelled = (d) => short || wday(d) === 1;                              // 4 weeks: one label a week (Mondays)
-  const lw = Math.max(...dates.filter(labelled).map((d) => textW(rowLabel(d), 11)), 30) + 10;
+  const lw = Math.max(...dates.filter(labelled).map((d) => textW(rowLabel(d), chartFs(w))), 30) + 10;
   const m = { l: lw, r: 4, t: 62, b: 40 };
   const cw = (w - m.l - m.r) / 24, rh = (H - m.t - m.b) / span;
   const out = [svgOpen(w, H, t("acd.chart"))];
@@ -58,19 +58,19 @@ function heatmap(h, day, span, w) {
   const kw = Math.min(260, w - m.l - m.r), kx = m.l;
   out.push(`<defs><linearGradient id="acd-key" x1="0" x2="1" y1="0" y2="0"><stop offset="0" style="stop-color:var(--c-steps)" stop-opacity=".07"/>
     <stop offset="1" style="stop-color:var(--c-steps)" stop-opacity="1"/></linearGradient></defs>
-    <text x="${kx}" y="12" font-size="11" fill="var(--ink-3)">${esc(t("acd.scale"))}</text>
+    <text x="${kx}" y="13" font-size="${chartFs(w)}" fill="var(--ink-3)">${esc(t("acd.scale"))}</text>
     <rect x="${kx}" y="19" width="${kw.toFixed(1)}" height="10" rx="2" fill="url(#acd-key)"/>`);
   SCALE_TICKS.filter((v) => v >= lo && v <= hi).forEach((v) => {
     const tx = kx + frac(v) * kw;
     out.push(`<line x1="${tx.toFixed(1)}" x2="${tx.toFixed(1)}" y1="29" y2="33" stroke="var(--ink-3)"/>
-      <text x="${tx.toFixed(1)}" y="45" text-anchor="${tx - kx < 8 ? "start" : "middle"}" font-size="11" fill="var(--ink-3)" class="num">${fmt(v)}</text>`);
+      <text x="${tx.toFixed(1)}" y="45" text-anchor="${tx - kx < 8 ? "start" : kx + kw - tx < 16 ? "end" : "middle"}" font-size="${chartFs(w)}" fill="var(--ink-3)" class="num">${fmt(v)}</text>`);
   });
   dates.forEach((d, k) => {
     const y0 = m.t + (span - 1 - k) * rh, label = dayLabel(d);
     // the row's label opens the day by keyboard too (the cells are mouse-only; the table below has every day)
     out.push(`<rect x="0" y="${y0.toFixed(1)}" width="${(lw - 4).toFixed(1)}" height="${rh.toFixed(1)}" fill="transparent" data-day="${d}" tabindex="0" role="button"
       aria-label="${esc(t("ui.open_day", { day: label }))}"/>`);
-    if (labelled(d)) out.push(`<text x="${lw - 8}" y="${(y0 + rh / 2 + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="var(--ink-2)" pointer-events="none">${esc(rowLabel(d))}</text>`);
+    if (labelled(d)) out.push(`<text x="${lw - 8}" y="${(y0 + rh / 2 + 4).toFixed(1)}" text-anchor="end" font-size="${chartFs(w)}" fill="var(--ink-2)" pointer-events="none">${esc(rowLabel(d))}</text>`);
     grid[k].forEach((c, hour) => {
       const x = m.l + hour * cw, tip = t("acd.tip", { day: label, hour: String(hour).padStart(2, "0"),
         what: c ? t("acd.tip_steps", { v: fmt(c.steps), m: c.minutes }) : t("acd.tip_none") });
@@ -84,8 +84,8 @@ function heatmap(h, day, span, w) {
       }
     });
   });
-  HOUR_TICKS.forEach((hr) => out.push(`<text x="${(m.l + (hr + 0.5) * cw).toFixed(1)}" y="${H - m.b + 15}" text-anchor="middle" font-size="11" fill="var(--ink-3)" class="num">${String(hr).padStart(2, "0")}</text>`));
-  out.push(`<text x="${(m.l + 12 * cw).toFixed(1)}" y="${H - 5}" text-anchor="middle" font-size="11" fill="var(--ink-3)">${esc(t("acd.x"))}</text>`, "</svg>");
+  HOUR_TICKS.forEach((hr) => out.push(`<text x="${(m.l + (hr + 0.5) * cw).toFixed(1)}" y="${H - m.b + 15}" text-anchor="middle" font-size="${chartFs(w)}" fill="var(--ink-3)" class="num">${String(hr).padStart(2, "0")}</text>`));
+  out.push(`<text x="${(m.l + 12 * cw).toFixed(1)}" y="${H - 5}" text-anchor="middle" font-size="${chartFs(w)}" fill="var(--ink-3)">${esc(t("acd.x"))}</text>`, "</svg>");
   return out.join("");
 }
 function heatTable(h, day, span) {
@@ -106,20 +106,19 @@ export default {
       <strong>${esc(finite(steps) ? t("acd.steps", { v: fmt(rround(steps)) }) : t("acd.no_record"))}</strong>
       <small>${esc(finite(minutes) ? t("acd.over", { dur: dur(minutes / 60), note }) : note)}</small></div>`;
     const summary = `<section class="health-card activity-summary-card">
-      ${cardTop(metricHeading("calendar", esc(t("acd.summary")), "teal"), evidenceTag("record", t("acd.summary_tag")))}
+      ${cardTop(metricHeading("calendar", esc(t("acd.summary")), "teal"), evidenceTag("record", t("acd.summary_tag")), info(t("acd.fine_t"), `<p>${esc(t("acd.fine"))}</p>`))}
       <div class="activity-stat-grid">
         ${block(dayLabel(focus, { year: false }), a.steps, a.minutes, t("acd.selected"))}
         ${block(t("acd.avg7"), a.s7.steps, a.s7.minutes, t("acd.days", { n: a.s7.days }))}
-        ${block(t("acd.avg28"), a.s28.steps, a.s28.minutes, t("acd.days", { n: a.s28.days }))}</div>
-      <p class="fine-print">${esc(t("acd.fine"))}</p></section>`;
+        ${block(t("acd.avg28"), a.s28.steps, a.s28.minutes, t("acd.days", { n: a.s28.days }))}</div></section>`;
     const seg = `<div class="trd-range acd-range" role="group" aria-label="${esc(t("acd.range"))}"><span>${esc(t("acd.range"))}</span><div class="seg">
       ${[[7, "acd.d7"], [28, "acd.d28"]].map(([v, k]) => `<button type="button" data-heat="${v}" aria-pressed="${heatSpan === v}">${esc(t(k))}</button>`).join("")}</div></div>`;
     const lede = t("acd.heat_lede", { shade: t(ctx.dark ? "acd.brighter" : "acd.darker"), n: recordedHours(h, focus, heatSpan), total: heatSpan * 24 });
     const heat = `<section class="health-card activity-card">
       ${cardTop(metricHeading("calendar", esc(t("acd.heat")), "teal"), evidenceTag("record", t("acd.heat_tag")))}
       ${seg}
-      <p class="chart-lede">${esc(lede)}</p>
-      ${chartBox("acd-heat", { label: t("acd.chart"), hint: t("acd.hint"), height: 320, table: heatTable(h, focus, heatSpan) })}</section>`;
+      <p class="chart-lede">${esc(lede)} <span class="lede-hint"><span aria-hidden="true">☝</span>${esc(t("acd.hint"))}</span></p>
+      ${chartBox("acd-heat", { label: t("acd.chart"), height: 320, table: heatTable(h, focus, heatSpan) })}</section>`;
     return `${detailHeader(t("acd.title"), esc(t("acd.lede")))}${summary}${heat}`;
   },
 

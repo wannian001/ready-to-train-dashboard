@@ -33,8 +33,47 @@ export const metricHeading = (iconName, title, kind = "") => `<div class="metric
 export const cardTop = (heading, ...right) => `<div class="card-top">${heading}${right.filter(Boolean).join("")}</div>`;
 // the title block of a Today detail page
 export const detailHeader = (title, lede) => `<div class="detail-header"><h2>${esc(title)}</h2><p>${lede}</p></div>`;
-// a fold with method notes (the kit's .how)
-export const methodNote = (title, body) => `<details class="how"><summary>${esc(title)}</summary>${body}</details>`;
+// An i at a card's top-right that opens a short explanation (how good a number is, how to read a chart, method notes)
+// in a small panel, instead of a fold or paragraphs under the card (the Proactive Health AIO pages do the same). The
+// words wait in a <template> beside the button, so they take no room until asked for.
+export const info = (title, body) => `<span class="info-wrap"><button type="button" class="info-btn" aria-haspopup="dialog" aria-expanded="false"
+  aria-label="${esc(title)}" title="${esc(title)}">${icon("info", 18)}</button><template><b class="info-pop-title">${esc(title)}</b>${body}</template></span>`;
+let pop = null;
+export function closeInfo(refocus = false) {
+  if (!pop) return;
+  const owner = pop.owner;
+  owner.setAttribute("aria-expanded", "false");
+  pop.remove(); pop = null;
+  if (refocus && owner.isConnected) owner.focus();
+}
+function openInfo(button) {
+  if (pop && pop.owner === button) { closeInfo(); return; }
+  closeInfo();
+  pop = document.createElement("div");
+  pop.className = "info-pop";
+  pop.setAttribute("role", "dialog");
+  pop.setAttribute("aria-label", button.getAttribute("aria-label"));
+  pop.tabIndex = -1;
+  pop.appendChild(button.nextElementSibling.content.cloneNode(true));
+  pop.owner = button;
+  document.body.appendChild(pop);
+  button.setAttribute("aria-expanded", "true");
+  // below the i, its right edge on the i's right edge, kept inside the window
+  const r = button.getBoundingClientRect(), w = pop.offsetWidth, gutter = 12;
+  pop.style.left = `${Math.max(gutter, Math.min(r.right - w, innerWidth - w - gutter)) + scrollX}px`;
+  pop.style.top = `${r.bottom + 8 + scrollY}px`;
+  pop.focus({ preventScroll: true });
+}
+if (typeof document !== "undefined" && typeof document.addEventListener === "function") {   // the tests import this module in Node
+  document.addEventListener("click", (e) => {
+    const button = e.target.closest(".info-btn");
+    if (button) openInfo(button);
+    else if (pop && !pop.contains(e.target)) closeInfo();
+  });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && pop) closeInfo(true); });
+  addEventListener("hashchange", () => closeInfo());
+  addEventListener("resize", () => closeInfo());
+}
 // a small labelled number (app.R small_stat)
 export const smallStat = (label, value, suffix = "") =>
   `<div class="small-stat"><span>${esc(label)}</span><strong>${esc(value)}</strong><small>${esc(suffix)}</small></div>`;

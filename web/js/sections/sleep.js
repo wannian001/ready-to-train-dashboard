@@ -13,8 +13,8 @@ import { loadAreaPerson } from "../data.js";
 
 const SPAN = 7;
 const NARROW = 480;
-// about how wide an 11 px label is: CJK characters are square, Latin ones about 0.56 em
-const labelWidth = (s) => [...String(s)].reduce((w, ch) => w + (/[\u2e80-\u9fff\uff00-\uffef]/.test(ch) ? 11 : 6.2), 0);
+// about how wide a 13 px label is: CJK characters are square, Latin ones about 0.56 em
+const labelWidth = (s) => [...String(s)].reduce((w, ch) => w + (/[\u2e80-\u9fff\uff00-\uffef]/.test(ch) ? 13 : 7.3), 0);
 
 // ---- R's statistics, operation for operation (arm64 R: long double is double) -----------------------------------
 // mean(): the sum divided by n, then one correction pass

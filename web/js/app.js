@@ -11,7 +11,7 @@ import "./i18n/about.js";
 import { loadStudy, loadPerson } from "./data.js";
 import { addDays, inRecord, at, series, visiblePerson, expectedOn, usualStats, trainingLoadSeries, loadChangePct,
   focalBand, sparkWindow, signalOn } from "./model.js";
-import { icon, evidenceTag, scopeChip, revealButton, hideButton } from "./ui.js";
+import { icon, evidenceTag, scopeChip, revealButton, hideButton, closeInfo } from "./ui.js";
 import { sparkBars, sparkReadiness, sparkLikert } from "./spark.js";
 import { aboutHtml } from "./about.js";
 
@@ -133,14 +133,16 @@ function revealBar(r, hasCheckin) {
   if (state.revealed) {
     const felt = at(person, "readiness", state.focus);
     let line = t("rv.shown_noexp", { id: who, felt: fmt(felt, 0) });
-    if (finite(r.value)) {
-      const g = felt - r.value;
+    const g = finite(r.value) ? felt - r.value : NaN;
+    if (finite(g)) {
       const words = Math.abs(g) < 0.05 ? t("rv.gap_same") : t(g > 0 ? "rv.gap_up" : "rv.gap_down", { v: fmt(Math.abs(g), 1) });
       line = t("rv.shown", { id: who, felt: fmt(felt, 0), expected: fmt(r.value, 1), gap: words });
     }
-    // the study's one clear everyday habit, when it happened the night before this morning
+    // the study's one clear everyday habit, when it happened the night before this morning: mentioned only when the
+    // morning came out lower than expected, and as the study-wide average, which says nothing about this one day
     const late = signalOn(person, "late0", state.focus) === 1;
-    const story = late ? `${sp()}${t("rv.story", { ...pr, time: clock(at(person, "start_hour", state.focus)) })}` : "";
+    const avg = (study.today_effects.find((e) => e.key === "late0") || {}).effect;
+    const story = late && g <= -0.05 && finite(avg) ? `${sp()}${t("rv.story", { ...pr, time: clock(at(person, "start_hour", state.focus)), v: fmt(Math.abs(avg), 2) })}` : "";
     return `<div class="reveal-bar shown">${icon("check")}<span><strong>${esc(line)}</strong>${esc(story)}${sp()}${esc(t("rv.green"))}</span>${hideButton()}</div>`;
   }
   const lead = finite(r.value) ? t("rv.guess", { id: who, value: fmt(r.value, 1), ...pr }) : t("rv.no_guess", { id: who, ...pr });
@@ -214,8 +216,11 @@ function head() {
   const zh = getLang() === "zh";
   const title = zh ? t("app.alt") : t("app.name"), alt = zh ? t("app.name") : t("app.alt");
   // laptop first: the two names share one line; under them, three short lines a first-time reader needs (the
-  // question, what came out, who did what), then the data line with the way to the brief and to the methods
-  const rows = [["brief.q.h", "brief.q"], ["brief.f.h", "brief.f"], ["brief.r.h", "brief.r"]]
+  // question, what came out, who did what), then the data line with the way to the brief and to the methods. Only
+  // the Today overview and the design summary carry all three; the other pages keep the question in one line, so
+  // their first chart is on the first screen
+  const full = state.page === "report" || (state.page === "today" && state.section === "overview");
+  const rows = (full ? [["brief.q.h", "brief.q"], ["brief.f.h", "brief.f"], ["brief.r.h", "brief.r"]] : [["brief.q.h", "brief.q_short"]])
     .map(([h, b]) => `<div class="brief-row"><dt>${esc(t(h))}</dt><dd>${esc(t(b))}</dd></div>`).join("");
   return `<div class="head"><div>
     <h1>${esc(title)} <span class="h1-alt" lang="${zh ? "en" : "zh-CN"}">${esc(alt)}</span></h1>
@@ -389,10 +394,12 @@ async function render() {
   if (seq !== renderSeq) return;
   const back = state.page === "today" && state.section !== "overview"
     ? `<a class="back-pill" href="${hashFor("today", "overview")}">‹ ${esc(t("nav.back"))}</a>` : "";
-  const banner = state.page === "choices" ? `<div class="pooled-banner">${icon("info")}<span>${t("pooled.banner", { n: study.people.length,
-    first: monthLabel(study.first), last: monthLabel(study.last) })}</span></div>` : "";
+  // the Everyday habits page pools everyone, so the pickers would do nothing there: one grey line says so instead
+  const banner = state.page === "choices" ? `<p class="pooled-line">${icon("info", 16)}<span>${esc(t("pooled.line", {
+    first: monthLabel(study.first), last: monthLabel(study.last) }))}</span></p>` : "";
   const scrollY = window.scrollY;
-  const picks = state.page === "report" ? "" : pickers();
+  const picks = state.page === "report" || state.page === "choices" ? "" : pickers();
+  closeInfo();
   main.innerHTML = `${head()}${picks}${banner}<p class="sr" role="status" aria-live="polite">${esc(t("ctl.status", { id: ctx.pid, day: dayLabel(state.focus) }))}</p>
     <div class="page page-${name}">${back}${content}</div>${footer()}`;
   if (mount) mount(main.querySelector(".page"));
@@ -405,7 +412,7 @@ function footer() {
 }
 function wire(main) {
   main.querySelector("#about-open").onclick = openAbout;
-  if (state.page === "report") return;   // no pickers on the design summary
+  if (state.page === "report" || state.page === "choices") return;   // no pickers on the design summary or Everyday habits
   main.querySelector("#participant").onchange = (e) => setPerson(e.target.value);
   const input = main.querySelector("#focus-day");
   input.onchange = () => { if (input.value) setDay(input.value); };
