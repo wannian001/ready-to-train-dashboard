@@ -19,7 +19,7 @@ How sleep, training and everyday habits line up with feeling ready to train: 16 
 - **Finding.** The guess rests almost entirely on your usual level; adding the tracker and the training log doesn't make it more accurate (both guesses are off by about 1 point out of 10). Of 16 everyday habits, only going to bed 1 h+ later than usual goes with a clearly worse next morning, 0.46 points lower on average.
 - **My part.** I set the question, designed the interaction and the charts, and checked every number; AI coding assistants wrote the R code.
 
-A solo assignment for GEOM90007 Information Visualisation at the University of Melbourne, built in R Shiny in September 2026. Mark: not yet released.
+A solo assignment for GEOM90007 Information Visualisation at the University of Melbourne, built in R Shiny in September 2026. Mark: 92/100, the top mark in the class (class mean 71.8).
 
 In October 2026 a [web version](#web-version) was added that opens in any browser without R. The submitted app in `app/` is unchanged.
 
@@ -42,7 +42,7 @@ The audience is people who log their training, sleep and how they feel each day 
 
 - Of 16 everyday habits, only "go to bed 1 h+ later than usual" has a clear link with next-morning readiness: 0.46 points lower on a 10-point scale, BH-adjusted p < .05. This is an association, not a cause.
 - Adding Fitbit and training data barely changes the expected readiness; it mostly follows each person's own usual level. The dashboard says so.
-- The mark will be added here once released.
+- Marked 92/100, the top mark in the class; class mean 71.8.
 
 ### The assignment
 
@@ -107,7 +107,7 @@ Shared as a portfolio piece. There is no open licence; please don't reuse it for
 - **发现：** 猜的时候起作用的几乎只有你平常的水平，加上手环和训练记录也没有更准，两种猜法满分 10 分都平均差 1 分左右。16 个日常习惯里，只有“比平常晚睡 1 小时以上”和第二天早上状态变差明确相关，平均低 0.46 分。
 - **我做的：** 定问题、设计交互和图表、逐个核对数字；R 代码由 AI 编程助手编写。
 
-墨尔本大学 GEOM90007 信息可视化课程的个人作业，2026 年 9 月用 R Shiny 完成。得分：待发布。
+墨尔本大学 GEOM90007 信息可视化课程的个人作业，2026 年 9 月用 R Shiny 完成。得分 92/100，全班最高分（班均 71.8）。
 
 2026 年 10 月加了一个[网页版](#网页版)，不用装 R，浏览器直接打开。`app/` 里提交的原版没有改动。
 
@@ -138,7 +138,7 @@ Shared as a portfolio piece. There is no open licence; please don't reuse it for
 
 - 16 个日常习惯里，只有“比平时晚睡 1 小时以上”和第二天状态变差有明确关联：平均低 0.46 分（满分 10 分），BH 校正后 p < .05。这是关联，不是因果。
 - 加上 Fitbit 和训练记录以后，估计值几乎不变，主要还是跟着每个人自己的平常水平走。看板把这一点直接写了出来。
-- 分数发布后补在这里。
+- 得分 92/100，全班最高分；班均 71.8。
 
 ### 作业要求
 

@@ -183,7 +183,7 @@ export const BRIEF = {
       { h: "What came out", items: [
         "Three pages: <b>Today</b> (five snapshot cards, each with a detail view), <b>Everyday habits</b> (18 habits and next-morning readiness) and <b>Compare habits</b> (one participant among the others). Every number is tagged as a record, an association or a concept demo.",
         "<b>Findings:</b> of 16 everyday habits, only going to bed 1 h+ later than usual has a clear link with next-morning readiness, 0.46 points lower on average, and the link still holds after allowing for testing many habits at once. The tracker and training log barely change the expectation: checked on March 2020 records that were not used to fit the model, it was off by 1.01 points on average, the same as the usual level alone.",
-        "<b>Mark:</b> not yet released."] },
+        "<b>Mark:</b> 92/100, the top mark in the class; class mean 71.8."] },
     ],
     tryIt: "Try it:",
     source: "The assignment card is a summary of the Canvas assignment page (read on 19 September 2026).",
@@ -206,7 +206,7 @@ export const BRIEF = {
       { h: "做出了什么", items: [
         "三页：<b>今天</b>（五张快照卡片，每张都能点开看详情）、<b>日常习惯</b>（18 个习惯和第二天早上的准备度）、<b>习惯对比</b>（一名参与者放在其他人中间）。每个数字都标明是记录、关联还是概念演示。",
         "<b>发现：</b>16 个日常习惯里，只有比平常晚睡 1 小时以上和第二天早上的准备度有明确关联，平均低 0.46 分，同时检验多个习惯之后仍然成立。手环和训练记录几乎不改变预期：拿没用来拟合模型的 2020 年 3 月记录检验，平均差 1.01 分，和只用平常水平一样。",
-        "<b>分数：</b>待发布。"] },
+        "<b>分数：</b>92/100，全班最高分；班均 71.8。"] },
     ],
     tryIt: "去看看：",
     source: "“老师布置的作业”一栏概括自 Canvas 作业页（2026 年 9 月 19 日读取）。",
