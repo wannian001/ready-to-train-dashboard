@@ -36,8 +36,10 @@
 .fe-svg text, .wf-svg text, .ic-svg text { font-family: var(--font); }
 .fe-focus { fill: var(--c-expected-soft); }
 .fe-grid, .wf-grid, .ic-grid { stroke: var(--c-grid); stroke-width: 1; }
-.fe-tick, .wf-tick, .wf-xtick, .ic-tick { fill: var(--ink-3); font-size: 11.5px; font-variant-numeric: tabular-nums; }
-.fe-ytitle, .wf-ytitle, .wf-xtitle, .ic-title { fill: var(--ink-3); font-size: 12px; }
+.fe-tick, .wf-tick, .wf-xtick, .ic-tick { fill: var(--ink-3); font-size: 13px; font-variant-numeric: tabular-nums; }
+.fe-ytitle, .wf-ytitle, .wf-xtitle, .ic-title { fill: var(--ink-2); font-size: 13px; }
+/* chart text: at least 13px on a laptop, 12px on a phone (the marker's comment: some labels were too small) */
+@media (max-width: 520px) { .fe-tick, .wf-tick, .wf-xtick, .ic-tick, .fe-ytitle, .wf-ytitle, .wf-xtitle, .ic-title, .ic-side { font-size: 12px; } }
 .fe-gap { stroke: var(--c-gap); stroke-width: 2; }
 .fe-line { fill: none; stroke: var(--c-expected); stroke-width: 2; stroke-linejoin: round; }
 .fe-exp { fill: var(--surface); stroke: var(--c-expected); stroke-width: 1.8; }
@@ -61,12 +63,12 @@ details.rdy-build[open] > summary::before { transform: rotate(90deg); }
 .wf-box { margin-bottom: var(--s-3); }
 .wf-axis { stroke: var(--c-axis); stroke-width: 1; }
 .wf-divider { stroke: var(--line-2); stroke-width: 1; stroke-dasharray: 2 3; }
-.wf-stage-name { font-size: 11px; font-weight: 700; }
+.wf-stage-name { font-size: 13px; font-weight: 700; }
 .wf-stage-name.s1 { fill: var(--rd-stage-1); } .wf-stage-name.s2 { fill: var(--rd-stage-2); } .wf-stage-name.s3 { fill: var(--rd-stage-3); }
 .wf-base { stroke: var(--ink-3); stroke-width: 1.2; stroke-dasharray: 5 4; }
-.wf-base-label { fill: var(--ink-2); font-size: 11px; }
+.wf-base-label { fill: var(--ink-2); font-size: 13px; }
 .wf-felt { stroke: var(--c-felt); stroke-width: 2.5; }
-.wf-felt-label { fill: var(--c-felt); font-size: 12px; font-weight: 700; }
+.wf-felt-label { fill: var(--c-felt); font-size: 13px; font-weight: 700; }
 .wf-bar.off, .wf-dot.off { fill: var(--rd-off); }
 .wf-bar.unknown, .wf-dot.unknown { fill: var(--rd-unknown); }
 .wf-bar.held { stroke: var(--ink); stroke-width: 2; }
@@ -75,9 +77,9 @@ details.rdy-build[open] > summary::before { transform: rotate(90deg); }
 .wf-bar.s3, .wf-dot.s3 { fill: var(--rd-stage-3); }
 .wf-dot { stroke: var(--surface); stroke-width: 1.5; }
 .wf-run { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
-.wf-label { fill: var(--ink); font-size: 11px; font-weight: 700; paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
-.wf-end { fill: var(--c-expected); font-size: 11.5px; font-weight: 700; paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
-@media (max-width: 520px) { .wf-label { font-size: 9.5px; } }
+.wf-label { fill: var(--ink); font-size: 13px; font-weight: 700; paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
+.wf-end { fill: var(--c-expected); font-size: 13px; font-weight: 700; paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
+@media (max-width: 520px) { .wf-label, .wf-end, .wf-stage-name, .wf-base-label, .wf-felt-label { font-size: 12px; } }
 /* the steps come in one after another; Replay animation draws the chart again */
 .wf-svg.anim .wf-bar { transform-box: fill-box; transform-origin: 50% 100%; animation: wf-grow .52s cubic-bezier(.33, 1, .68, 1) both; animation-delay: calc(var(--i) * 110ms); }
 .wf-svg.anim .wf-bar.down { transform-origin: 50% 0; }
@@ -98,12 +100,12 @@ details.rdy-build[open] > summary::before { transform: rotate(90deg); }
 .wf-stage.stage-3 { border-top-color: var(--rd-stage-3); }
 .wf-stage-head { display: flex; justify-content: space-between; gap: var(--s-2); align-items: baseline; margin-bottom: var(--s-2); }
 .wf-stage-head strong { font-size: var(--t-sm); }
-.wf-stage-head span { font-size: 11px; color: var(--ink-3); white-space: nowrap; }
+.wf-stage-head span { font-size: var(--t-xs); color: var(--ink-3); white-space: nowrap; }
 .wf-stage ol { margin: 0; padding-left: 1.7em; }
 .wf-stage li { padding: 3px 0 5px; line-height: 1.35; color: var(--ink-2); }
-.wf-stage li::marker { font-size: 11px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
-.wf-stage li > span { display: block; font-size: var(--t-xs); }
-.wf-stage li > small { display: block; font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+.wf-stage li::marker { font-size: var(--t-xs); color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.wf-stage li > span { display: block; font-size: var(--t-sm); }
+.wf-stage li > small { display: block; font-size: var(--t-xs); color: var(--ink-3); margin-top: 2px; }
 .wf-stage li.held > span { font-weight: 700; color: var(--ink); }
 .wf-stage li.held::marker { color: var(--c-expected); font-weight: 700; }
 .wf-stage li.unknown { opacity: .6; }
@@ -122,12 +124,12 @@ details.rdy-build[open] > summary::before { transform: rotate(90deg); }
 .ic-lo { fill: var(--rd-lo-tint); }
 .ic-hi { fill: var(--rd-hi-tint); }
 .ic-zero { stroke: var(--ink); stroke-width: 1; }
-.ic-side { font-size: 11.5px; font-weight: 700; }
+.ic-side { font-size: 13px; font-weight: 700; }
 .ic-side.lo { fill: var(--c-load); }
 .ic-side.hi { fill: var(--c-felt); }
 .ic-head { fill: var(--ink); font-weight: 700; }
-.ic-label { fill: var(--ink-3); }
-.ic-label.clear { fill: var(--ink); }
+.ic-label { fill: var(--ink); }
+.ic-label.clear { fill: var(--ink); font-weight: 650; }
 .ic-label.ring { fill: var(--c-expected); font-weight: 700; }
 .ic-value { fill: var(--ink-3); font-variant-numeric: tabular-nums; }
 .ic-value.clear { fill: var(--ink); font-weight: 700; }
@@ -154,3 +156,13 @@ details.rdy-build .comparison-conclusion { margin: 0 0 var(--s-2); }
   .chs-seg button { border-radius: var(--r-sm); flex: 1 1 auto; }
 }
 .chs-note-card .reading-list strong { color: var(--ink); }
+
+/* the felt-vs-expected chart's key (the marks of readiness.js feltChart) */
+.fe-legend { margin-bottom: var(--s-2); }
+.fe-legend .lg-hint { margin-left: auto; gap: 6px; }
+@media (max-width: 640px) { .fe-legend .lg-hint { margin-left: 0; flex-basis: 100%; } }
+.fe-legend .lg-exp::before { content: ""; width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--c-expected); background: var(--surface); }
+.fe-legend .lg-felt::before { content: ""; width: 11px; height: 11px; border-radius: 50%; background: var(--c-felt); }
+.fe-legend .lg-gap::before { content: ""; width: 2px; height: 14px; background: var(--c-gap); }
+.fe-legend .lg-miss::before { content: "×"; color: var(--c-gap); font-weight: 700; font-size: 15px; line-height: 1; }
+.fe-legend .lg-focus::before { content: ""; width: 14px; height: 14px; border-radius: 3px; background: var(--c-expected-soft); }

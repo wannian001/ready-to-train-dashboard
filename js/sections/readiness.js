@@ -8,7 +8,7 @@
 import { draw, esc } from "../../kit/js/charts.js";
 import { t, fmt, dev, signed, pShort, dayLabel, shortDate, getLang, finite } from "../i18n.js";
 import { addDays, dayRange, expectedSeries, signalOn, wday } from "../model.js";
-import { evidenceTag, scopeChip, metricHeading, cardTop, detailHeader, methodNote, chartBox, dataTable, dayButton, revealButton, hideButton } from "../ui.js";
+import { evidenceTag, scopeChip, metricHeading, cardTop, detailHeader, chartBox, dataTable, dayButton, revealButton, hideButton, info } from "../ui.js";
 import { modelMae } from "../about.js";
 import { loadArea } from "../data.js";
 import "../i18n/terms.js";
@@ -122,7 +122,7 @@ export function intervalChart(rows, { width, xlim, breaks, sides = null, xTitle,
   const { items, bottom } = intervalLayout(rows);
   const top = sides ? 0.75 : 0.2;
   const Y = (u) => AX_TOP + (top - u) * PX;
-  const padL = narrow ? 8 : 14, padR = narrow ? 8 : 14, fs = narrow ? 10.5 : 11.5;
+  const padL = narrow ? 8 : 14, padR = narrow ? 8 : 14, fs = narrow ? 12 : 13;
   const [l0, l1] = xlim, span = l1 - l0;
   const X = (v) => padL + ((v - l0) / span) * (width - padL - padR);
   const yTop = Y(top), yBot = Y(bottom);
@@ -134,10 +134,13 @@ export function intervalChart(rows, { width, xlim, breaks, sides = null, xTitle,
     out.push(`<rect class="ic-hi" x="${X(0).toFixed(1)}" y="${yTop}" width="${(X(l1) - X(0)).toFixed(1)}" height="${(yBot - yTop).toFixed(1)}"/>`);
   }
   for (const b of breaks) {
-    const x = X(b).toFixed(1);
+    const x = X(b).toFixed(1), half = textW(signed(b, 1), fs) / 2;
+    // a tick label at either end of a narrow chart is pulled inside it
+    const anchor = X(b) - half < 1 ? "start" : X(b) + half > width - 1 ? "end" : "middle";
+    const tx = anchor === "start" ? Math.max(1, X(b) - 4).toFixed(1) : anchor === "end" ? Math.min(width - 1, X(b) + 4).toFixed(1) : x;
     out.push(`<line class="ic-grid" x1="${x}" x2="${x}" y1="${yTop}" y2="${yBot.toFixed(1)}"/>`);
-    out.push(`<text class="ic-tick" x="${x}" y="${AX_TOP - 8}" text-anchor="middle">${esc(signed(b, 1))}</text>`);
-    out.push(`<text class="ic-tick" x="${x}" y="${(yBot + 16).toFixed(1)}" text-anchor="middle">${esc(signed(b, 1))}</text>`);
+    out.push(`<text class="ic-tick" x="${tx}" y="${AX_TOP - 8}" text-anchor="${anchor}">${esc(signed(b, 1))}</text>`);
+    out.push(`<text class="ic-tick" x="${tx}" y="${(yBot + 16).toFixed(1)}" text-anchor="${anchor}">${esc(signed(b, 1))}</text>`);
   }
   out.push(`<line class="ic-zero" x1="${X(0).toFixed(1)}" x2="${X(0).toFixed(1)}" y1="${yTop}" y2="${yBot.toFixed(1)}"/>`);
   if (sides) {
@@ -147,16 +150,16 @@ export function intervalChart(rows, { width, xlim, breaks, sides = null, xTitle,
   for (const it of items) {
     if (it.head !== undefined) {
       // a heading too long for the chart takes two lines (the second one sits in the gap above the first row)
-      const room = X(l1) - labX, hs = narrow ? 11.5 : 12.5;
+      const room = X(l1) - labX, hs = narrow ? 12.5 : 14;
       const lines = textW(it.head, hs, true) > room ? splitTitle(it.head).map((ln) => fitLabel(ln, hs, true, room)) : [it.head];
-      lines.forEach((ln, k) => out.push(`<text class="ic-head" x="${labX.toFixed(1)}" y="${(Y(it.u + 0.2) + k * 14).toFixed(1)}" font-size="${hs}">${esc(ln)}</text>`));
+      lines.forEach((ln, k) => out.push(`<text class="ic-head" x="${labX.toFixed(1)}" y="${(Y(it.u + 0.2) + k * (hs + 2)).toFixed(1)}" font-size="${hs}">${esc(ln)}</text>`));
       continue;
     }
     const r = it.row, y = Y(it.u), cls = r.ring ? "ring" : r.clear ? "clear" : "plain";
     if (r.key === picked) out.push(`<rect class="ic-picked" x="${padL - 6}" y="${Y(it.u + 0.98).toFixed(1)}" width="${(width - padL - padR + 12).toFixed(1)}" height="${(1.22 * PX).toFixed(1)}" rx="8"/>`);
     const value = r.clear && !narrow ? t("evd.clear_value", { v: signed(r.effect, 2) }) : signed(r.effect, 2);
     const room = X(l1) - textW(value, fs, r.clear) - 10 - labX;
-    out.push(`<text class="ic-label ${cls}" x="${labX.toFixed(1)}" y="${(Y(it.u + 0.6) + 4).toFixed(1)}" font-size="${fs}">${esc(fitLabel(r.label, fs, r.ring, room))}</text>`);
+    out.push(`<text class="ic-label ${cls}" x="${labX.toFixed(1)}" y="${(Y(it.u + 0.6) + 4).toFixed(1)}" font-size="${fs}">${esc(fitLabel(r.label, fs, r.ring || r.clear, room))}</text>`);
     out.push(`<text class="ic-value ${r.clear ? "clear" : ""}" x="${X(l1).toFixed(1)}" y="${(Y(it.u + 0.6) + 4).toFixed(1)}" text-anchor="end" font-size="${fs}">${esc(value)}</text>`);
     if (finite(r.lo) && finite(r.hi)) out.push(`<line class="ic-ci ${r.clear ? "clear" : ""}" x1="${X(r.lo).toFixed(1)}" x2="${X(r.hi).toFixed(1)}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}"/>`);
     const s = r.ring ? 8 : 7, cx = X(r.effect);
@@ -218,20 +221,24 @@ function feltTip(r, focus, hasCheckin) {
 function feltChart(s, focus, hasCheckin, width) {
   const H = 300;
   if (!s.some((r) => finite(r.expected))) return `<svg viewBox="0 0 ${width} ${H}" width="${width}" height="${H}"><text x="${width / 2}" y="${H / 2}" text-anchor="middle" class="ic-empty">${esc(t("rdy.fe.empty"))}</text></svg>`;
-  const vals = s.flatMap((r) => [r.expected, r.felt]).filter(finite);
-  let lo = Math.max(0, Math.floor(Math.min(...vals)) - 1), hi = Math.min(10, Math.ceil(Math.max(...vals)) + 1);
-  if (hi - lo < 4) { hi = Math.min(10, lo + 4); lo = Math.max(0, hi - 4); }
+  // the whole 0–10 scale for every participant, so two people's gaps look the same size
+  const lo = 0, hi = 10;
   const m = { l: 46, r: 10, t: 12, b: 30 }, pw = width - m.l - m.r, ph = H - m.t - m.b, n = s.length;
   const X = (i) => m.l + ((i + 0.6) / (n - 1 + 1.2)) * pw, Y = (v) => m.t + ((hi - v) / (hi - lo)) * ph, cw = pw / (n - 1 + 1.2);
   const out = [];
   const fi = s.findIndex((r) => r.date === focus);
   if (fi >= 0) out.push(`<rect class="fe-focus" x="${(X(fi) - cw / 2).toFixed(1)}" y="${m.t}" width="${cw.toFixed(1)}" height="${ph}"/>`);
-  for (let v = lo; v <= hi; v++) {
+  for (let v = lo; v <= hi; v += 2) {
     out.push(`<line class="fe-grid" x1="${m.l}" x2="${width - m.r}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}"/>`);
     out.push(`<text class="fe-tick" x="${m.l - 8}" y="${(Y(v) + 4).toFixed(1)}" text-anchor="end">${v}</text>`);
   }
   out.push(`<text class="fe-ytitle" transform="translate(13 ${(m.t + ph / 2).toFixed(1)}) rotate(-90)" text-anchor="middle">${esc(t("rdy.fe.y"))}</text>`);
-  s.forEach((r, i) => { if (wday(r.date) === 1) out.push(`<text class="fe-tick" x="${X(i).toFixed(1)}" y="${H - 10}" text-anchor="middle">${esc(shortDate(r.date))}</text>`); });
+  s.forEach((r, i) => {
+    if (wday(r.date) !== 1) return;
+    const label = shortDate(r.date), half = textW(label, width < 520 ? 12 : 13) / 2;
+    const anchor = X(i) + half > width - 1 ? "end" : "middle";
+    out.push(`<text class="fe-tick" x="${(anchor === "end" ? width - 1 : X(i)).toFixed(1)}" y="${H - 10}" text-anchor="${anchor}">${esc(label)}</text>`);
+  });
   s.forEach((r, i) => { if (finite(r.felt) && finite(r.expected)) out.push(`<line class="fe-gap" x1="${X(i).toFixed(1)}" x2="${X(i).toFixed(1)}" y1="${Y(r.expected).toFixed(1)}" y2="${Y(r.felt).toFixed(1)}"/>`); });
   const pts = s.map((r, i) => (finite(r.expected) ? `${X(i).toFixed(1)},${Y(r.expected).toFixed(1)}` : null)).filter(Boolean);
   if (pts.length > 1) out.push(`<polyline class="fe-line" points="${pts.join(" ")}"/>`);
@@ -250,6 +257,11 @@ function feltChart(s, focus, hasCheckin, width) {
   });
   return `<svg class="fe-svg" viewBox="0 0 ${width} ${H}" width="${width}" height="${H}">${out.join("")}</svg>`;
 }
+// the chart's key: what each mark means, × included
+const feltLegend = () => `<div class="ev-legend fe-legend">
+  <span class="lg-exp">${esc(t("rdy.fe.lg.expected"))}</span><span class="lg-felt">${esc(t("rdy.fe.lg.felt"))}</span>
+  <span class="lg-gap">${esc(t("rdy.fe.lg.gap"))}</span><span class="lg-miss">${esc(t("rdy.fe.lg.miss"))}</span><span class="lg-focus">${esc(t("rdy.fe.lg.focus"))}</span>
+  <span class="lg-hint"><span aria-hidden="true">☝</span>${esc(t("rdy.fe.hint"))}</span></div>`;
 function feltTable(s) {
   return wide("rdy-t6", t("rdy.fe.caption"), ["date", "level", "adj", "expected", "felt", "gap"].map((k) => t(`rdy.fe.h.${k}`)),
     [...s].reverse().map((r) => [dayButton(r.date), esc(fmt(r.level, 1)), esc(deltaLabel(r.adjustment)), esc(fmt(r.expected, 1)),
@@ -268,7 +280,9 @@ function waterfallChart(r, felt, width) {
   const half = Math.max(1, Math.max(...vals.map((v) => Math.abs(v - base))) * 1.25);
   const lo = Math.max(0, Math.floor((base - half) * 2) / 2), hi = Math.min(10, Math.ceil((base + half) * 2) / 2);
   const stepY = hi - lo <= 3 ? 0.5 : 1;
-  const m = { l: narrow ? 46 : 58, r: narrow ? 8 : 24, t: 28, b: narrow ? 74 : 68 };
+  const title = t("rdy.wf.x", { n: parts.length });
+  const lines = narrow ? wrapTitle(title, 12, width - 54 - 8) : [title];
+  const m = { l: narrow ? 46 : 58, r: narrow ? 8 : 24, t: 28, b: narrow ? 42 + 16 * lines.length : 68 };
   const pw = width - m.l - m.r, ph = H - m.t - m.b, cw = pw / parts.length, bw = Math.min(24, cw * 0.66);
   const X = (i) => m.l + (i + 0.5) * cw, Y = (v) => m.t + ((hi - v) / (hi - lo)) * ph;
   const out = [];
@@ -282,17 +296,14 @@ function waterfallChart(r, felt, width) {
   }
   out.push(`<line class="wf-axis" x1="${m.l}" x2="${width - m.r}" y1="${Y(lo).toFixed(1)}" y2="${Y(lo).toFixed(1)}"/>`);
   out.push(`<text class="wf-ytitle" transform="translate(${narrow ? 12 : 16} ${(m.t + ph / 2).toFixed(1)}) rotate(-90)" text-anchor="middle">${esc(t("rdy.wf.y"))}</text>`);
-  // the x title wraps on a narrow chart
-  const title = t("rdy.wf.x", { n: parts.length });
-  const lines = narrow && title.length * 6.2 > pw ? splitTitle(title) : [title];
-  lines.forEach((ln, i) => out.push(`<text class="wf-xtitle" x="${(m.l + pw / 2).toFixed(1)}" y="${(Y(lo) + 40 + i * 15).toFixed(1)}" text-anchor="middle">${esc(ln)}</text>`));
+  lines.forEach((ln, i) => out.push(`<text class="wf-xtitle" x="${(m.l + pw / 2).toFixed(1)}" y="${(Y(lo) + 40 + i * 16).toFixed(1)}" text-anchor="middle">${esc(ln)}</text>`));
   // the three stages: a thin divider between them and their names over the columns (the range when a name does not fit)
   [1, 2, 3].forEach((stage) => {
     const idx = parts.map((p, i) => (p.stage === stage ? i : -1)).filter((i) => i >= 0);
     if (!idx.length) return;
     const x0 = m.l + idx[0] * cw, x1 = m.l + (idx[idx.length - 1] + 1) * cw;
     if (idx[0] > 0) out.push(`<line class="wf-divider" x1="${x0.toFixed(1)}" x2="${x0.toFixed(1)}" y1="${m.t - 18}" y2="${Y(lo).toFixed(1)}"/>`);
-    const name = stageTitle(stage), fits = textW(name, 11, true) <= x1 - x0 - 8;
+    const name = stageTitle(stage), fits = textW(name, narrow ? 12 : 13, true) <= x1 - x0 - 8;
     out.push(`<text class="wf-stage-name s${stage}" x="${((x0 + x1) / 2).toFixed(1)}" y="${m.t - 10}" text-anchor="middle">${esc(fits ? name : STAGE_RANGE[stage])}</text>`);
   });
   out.push(`<line class="wf-base" x1="${m.l}" x2="${width - m.r}" y1="${Y(base).toFixed(1)}" y2="${Y(base).toFixed(1)}"/>`);
@@ -330,6 +341,17 @@ function waterfallChart(r, felt, width) {
     out.push(`<rect class="wf-hit" x="${(X(i) - cw / 2).toFixed(1)}" y="${m.t}" width="${cw.toFixed(1)}" height="${ph}" fill="transparent" data-tip="${tipAttr(tip)}" tabindex="0" role="img" aria-label="${esc(tip.replace(/\n/g, ". "))}"/>`);
   });
   return `<svg class="wf-svg anim" viewBox="0 0 ${width} ${H}" width="${width}" height="${H}">${out.join("")}</svg>`;
+}
+// a title in lines at most `room` pixels wide (CJK breaks anywhere, other text at spaces)
+function wrapTitle(s, size, room) {
+  const cjk = /[\u2e80-\u9fff]/.test(s), parts = cjk ? [...s] : s.split(" "), out = [];
+  let cur = "";
+  for (const w of parts) {
+    const next = cur ? (cjk ? cur + w : `${cur} ${w}`) : w;
+    if (cur && textW(next, size) > room) { out.push(cur); cur = w; } else cur = next;
+  }
+  if (cur) out.push(cur);
+  return out;
 }
 function splitTitle(s) {
   const words = s.split(" "), mid = s.length / 2;
@@ -411,15 +433,14 @@ export default {
       adj: `<strong>${esc(finite(r.adjustment) ? dev(r.adjustment, 2) : "—")}</strong>`, active, n });
     const summary = `${ready ? "" : `<p class="forecast-stale-note">${esc(t("rdy.stale"))}</p>`}
       <div class="rv-row">${step(t("rdy.expected"), finite(r.value) ? fmt(r.value, 1) : "—", t("rdy.of10"))}${arrow}${feltStep}${arrow}${gapStep}</div>
-      <p class="rv-equation">${equation}${ctx.revealed ? ` ${hideButton(t("rdy.hide")).replace('class="btn text"', 'class="btn text rv-hide"')}` : ""}</p>
-      <p class="fine-print">${esc(t("rdy.equation.why"))}</p>`;
+      <p class="rv-equation">${equation}${ctx.revealed ? ` ${hideButton(t("rdy.hide")).replace('class="btn text"', 'class="btn text rv-hide"')}` : ""}</p>`;
 
     // felt vs expected (felt from the visible record: the selected day stays hidden until Reveal)
     const s = expectedSeries(ctx.pv, study.model, study.signals, feltDays(ctx.focus));
     const note = feltNote(s, ctx.pid);
-    const accuracy = `<p class="rdy-acc"><strong>${esc(t("rdy.acc.q"))}<sup class="fn-mark">1</sup> </strong>${esc(t("rdy.acc.text", {
+    const accuracy = info(t("rdy.acc.q"), `<p>${esc(t("rdy.acc.text", {
       ridge: modelMae(study, "test", "ridge"), level: modelMae(study, "test", "^level$"), all: modelMae(study, "test", "level_all"), last5: modelMae(study, "test", "last5") }))}</p>
-      <p class="footnote"><sup>1</sup> ${esc(t("rdy.acc.foot"))}</p>`;
+      <p>${esc(t("rdy.acc.foot"))}</p>`);
 
     // how the expected value is built
     const headline = !ready ? `<p class="forecast-stale-note">${esc(t("rdy.stale"))}</p>`
@@ -438,19 +459,20 @@ export default {
     const rowsWide = factorChartRows(state, false);
     const pick = pickedFactor && state.find((x) => x.key === pickedFactor);
     const definition = pick ? `<div class="insight-note definition-note"><h4>${esc(t(`sig.${pick.key}`))}</h4><p>${esc(t("rdy.fx.defined", { detail: t(`sig.${pick.key}.detail`), state: pick.state }))}</p></div>` : "";
-    const why = methodNote(t("rdy.fx.why"), `<p>${esc(t("rdy.fx.why1"))}</p><p>${esc(t("rdy.fx.why2"))}</p><p>${esc(bhNote(effects, (x) => x.clear, "signals", (x) => t(`sig.${x.key}`)))}</p>`)
-      .replace('<details class="how"', '<details class="how" data-keep="why"');
+    const how = info(t("rdy.fx.how"), `<p>${esc(t("rdy.fx.lede", { n }))}</p><p><strong>${esc(t("rdy.fx.why"))}</strong></p><p>${esc(t("rdy.fx.why1"))}</p>
+      <p>${esc(t("rdy.fx.why2"))}</p><p>${esc(bhNote(effects, (x) => x.clear, "signals", (x) => t(`sig.${x.key}`)))}</p>`);
 
     return `${detailHeader(t("rdy.title"), esc(t("rdy.lede")))}
-      <section class="health-card rdy-card">${cardTop(metricHeading("pulse", esc(t("rdy.card")), "blue"), evidenceTag("association", t("rdy.tag")))}${summary}</section>
-      <section class="health-card rdy-felt-card">${cardTop(metricHeading("compare", esc(t("rdy.fe.title")), "model"), scopeChip(t("rdy.fe.scope")))}
-        <p class="chart-lede">${esc(t("rdy.fe.lede"))}</p>
-        ${chartBox("rdy-fe", { label: t("rdy.fe.label"), hint: t("rdy.fe.hint"), height: 300, table: feltTable(s) })}
-        <p class="${note.cls}">${esc(note.text)}</p>${accuracy}${build}</section>
-      <section class="health-card rdy-fx-card">${cardTop(metricHeading("compare", esc(t("rdy.fx.title")), "model"), scopeChip(t("rdy.fx.scope")))}
-        <p class="chart-lede">${esc(t("rdy.fx.lede", { n }))}</p>${intervalLegend(true)}
+      <section class="health-card rdy-card">${cardTop(metricHeading("pulse", esc(t("rdy.card")), "blue"), evidenceTag("association", t("rdy.tag")),
+        info(t("rdy.how.t"), `<p>${esc(t("rdy.equation.why"))}</p>`))}${summary}</section>
+      <section class="health-card rdy-felt-card">${cardTop(metricHeading("compare", esc(t("rdy.fe.title")), "model"), scopeChip(t("rdy.fe.scope")), accuracy)}
+        ${feltLegend()}
+        ${chartBox("rdy-fe", { label: t("rdy.fe.label"), height: 300, table: feltTable(s) })}
+        <p class="${note.cls}">${esc(note.text)}</p>${build}</section>
+      <section class="health-card rdy-fx-card">${cardTop(metricHeading("compare", esc(t("rdy.fx.title")), "model"), scopeChip(t("rdy.fx.scope")), how)}
+        ${intervalLegend(true)}
         ${chartBox("rdy-fx", { label: t("rdy.fx.label"), hint: t("evd.hint"), height: intervalHeight(rowsWide), table: factorTable(state) })}
-        ${definition}<p class="comparison-conclusion">${esc(factorsConclusion(effects))}</p>${why}</section>`;
+        ${definition}<p class="comparison-conclusion">${esc(factorsConclusion(effects))}</p></section>`;
   },
   mount(el, ctx, axes) {
     const { study, expected: r } = ctx;

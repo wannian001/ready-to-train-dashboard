@@ -6,7 +6,7 @@
 // The participant and day pickers do not change this page.
 import { draw, esc } from "../../kit/js/charts.js";
 import { t, fmt, dev, finite } from "../i18n.js";
-import { metricHeading, cardTop, scopeChip, chartBox } from "../ui.js";
+import { metricHeading, cardTop, scopeChip, chartBox, info } from "../ui.js";
 import { loadArea } from "../data.js";
 import { intervalChart, intervalHeight, intervalLegend, wirePicks, keepOpen, verdict, bhNote, pLine, g2, preciseEffects, wide, afterDraw } from "../sections/readiness.js";
 import "../i18n/terms.js";
@@ -63,9 +63,14 @@ export default {
     const tests = effects.filter((e) => finite(e.p)).length;
     const bh = bhNote(effects, (e) => e.effective, "rows", (e) => t(`lever.${e.key}`));
     const item = (k, vars = {}) => `<li><strong>${esc(t(`chs.note.${k}h`))}</strong>${esc(t(`chs.note.${k}`, vars))}</li>`;
-    return `<div class="view-intro"><div class="title-row"><h2>${esc(t("chs.title"))}</h2>${scopeChip(t("chs.scope"))}</div><p>${esc(t("chs.intro"))}</p></div>
+    // how to read the rows: an i on the card instead of a card of notes under it; the first note, the one finding,
+    // stays in view under the chart
+    const reading = info(t("chs.note.title"), `<p>${esc(t("chs.intro"))}</p><ul>${item(2, { bh })}${item(3)}${item(4)}${item(5)}${item(6)}</ul>`);
+    const refs = groups.length ? effects.filter((e) => e.group === groups[groups.length - 1] && finite(e.effect)).length : 0;
+    const n = effects.filter((e) => finite(e.effect)).length;
+    return `<div class="view-intro"><div class="title-row"><h2>${esc(t("chs.title"))}</h2>${scopeChip(t("chs.scope"))}</div></div>
       <section class="health-card chs-card">
-        ${cardTop(metricHeading("compare", esc(t("chs.card")), "model"), `<span class="subtle-tag">${esc(t("chs.tag", { k: effects.filter((e) => e.effective).length, n: effects.filter((e) => finite(e.effect)).length }))}</span>`)}
+        ${cardTop(metricHeading("compare", esc(t("chs.card")), "model"), `<span class="subtle-tag">${esc(t("chs.tag", { k: effects.filter((e) => e.effective).length, habits: n - refs, refs }))}</span>`, reading)}
         <div class="chs-filters">
           <div class="seg chs-seg" role="group" aria-label="${esc(t("chs.f.aria"))}">${filters}</div>
           <div class="seg chs-seg" role="group" aria-label="${esc(t("chs.o.aria"))}">${orders}</div>
@@ -73,9 +78,8 @@ export default {
         ${intervalLegend(false)}
         ${chartBox("chs-levers", { label: t("chs.label"), hint: t("evd.hint"), height: intervalHeight(rows.map((r) => ({ group: r.heading }))), table: leverTable(rows) })}
         ${definition}
-      </section>
-      <section class="health-card chs-note-card">${cardTop(metricHeading("info", esc(t("chs.note.title")), "model"))}
-        <ul class="reading-list">${item(1, { tests })}${item(2, { bh })}${item(3)}${item(4)}${item(5)}</ul></section>`;
+        <p class="comparison-conclusion"><strong>${esc(t("chs.note.1h"))}</strong>${esc(t("chs.note.1", { tests }))}</p>
+      </section>`;
   },
   mount(el, ctx, axes) {
     const { study } = ctx;

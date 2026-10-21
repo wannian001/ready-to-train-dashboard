@@ -9,7 +9,7 @@ import { draw, esc } from "../../kit/js/charts.js";
 import { t, getLang, dayLabel, signed, finite } from "../i18n.js";
 import { round0, fixed, rfmt } from "../i18n/body.js";
 import { addDays, focalBand } from "../model.js";
-import { evidenceTag, scopeChip, metricHeading, cardTop, detailHeader, methodNote, chartBox, dataTable, likertCells } from "../ui.js";
+import { evidenceTag, scopeChip, metricHeading, cardTop, detailHeader, chartBox, dataTable, likertCells, info } from "../ui.js";
 import { loadArea } from "../data.js";
 
 const TYPES = ["running", "endurance", "strength", "team"];   // training.R / body_regions.R order
@@ -163,22 +163,24 @@ export const sexOf = (profile) => (String(profile && profile.gender).toLowerCase
 // body_regions.R body_region_model_ui()
 export function bodyRegionModel(body, ctx) {
   const profile = bodyProfile(body, ctx.person, ctx.focus);
-  const head = cardTop(metricHeading("body", esc(t("body.title")), "blue"), evidenceTag("record", t("body.tag")));
+  // what the areas are and where the figures come from: an i on the card, not a fold under it
+  const head = cardTop(metricHeading("body", esc(t("body.title")), "blue"), evidenceTag("record", t("body.tag")),
+    info(t("body.how"), `<p>${esc(t("body.how1"))}</p><p>${esc(t("body.how2"))}</p>`));
   if (!profile) return `${head}<p class="empty-note">${esc(t("body.none"))}</p>`;
   const sex = sexOf(ctx.profile), view = bodyView(body, profile, sex, ctx.pid);
   const list = view.sorted.map((r) => `<li><span class="region-swatch" style="background:${r.colour}" aria-hidden="true"></span>
     <strong>${esc(r.label)}</strong><span>${esc(r.pct)}</span></li>`).join("");
+  // the figure first; what it compares and the list of areas beside it (under it on a phone)
   return `${head}
-    <div class="body-chips">${view.chips.map(scopeChip).join("")}</div>
-    <p class="chart-lede">${esc(view.lede)}</p>
     <div class="body-region-layout">
       <div class="body-figure">${bodyFigure(view, sex)}
         <div class="body-legend"><span>0%</span><span class="body-legend-bar" aria-hidden="true"></span><span>${esc(view.top)}</span>
           <small>${esc(view.small)}</small>
           <p class="body-caveat"><strong>${esc(t("body.caveat_b"))}</strong>${esc(view.caveat)}</p></div></div>
-      <ul class="body-region-list" aria-label="${esc(t("body.list"))}">${list}</ul>
-    </div>
-    ${methodNote(t("body.how"), `<p>${esc(t("body.how1"))}</p><p>${esc(t("body.how2"))}</p>`)}`;
+      <div class="body-side"><div class="body-chips">${view.chips.map(scopeChip).join("")}</div>
+        <p class="chart-lede">${esc(view.lede)}</p>
+        <ul class="body-region-list" aria-label="${esc(t("body.list"))}">${list}</ul></div>
+    </div>`;
 }
 
 // ---- the load-vs-soreness chart (100% stacked bars, one panel per load band) ----------------------------------

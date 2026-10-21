@@ -18,7 +18,9 @@ import { loadAreaPerson } from "../data.js";
 export const fmtR = (x, digits = 0) => (finite(x) ? fmt(rround(x, digits), digits) : "—");
 const titleCase = (s) => (getLang() === "en" ? s.replace(/\b\w/g, (c) => c.toUpperCase()) : s);
 // about how wide a label is (CJK characters are square, Latin ones about 0.56 em)
-export const textW = (s, size = 11) => [...String(s)].reduce((w, ch) => w + (/[⺀-鿿＀-￯]/.test(ch) ? size : size * 0.56), 0);
+export const textW = (s, size = 13) => [...String(s)].reduce((w, ch) => w + (/[⺀-鿿＀-￯]/.test(ch) ? size : size * 0.56), 0);
+// the size of a chart's words: 13px on a laptop, 12px on a phone (the marker's comment: some labels were too small)
+export const chartFs = (w) => (w < 480 ? 12 : 13);
 // the empty state of a chart (visuals.R health_empty)
 export const emptyChart = (w, h, text) => `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="${esc(text)}">
   <text x="${(w / 2).toFixed(1)}" y="${(h / 2).toFixed(1)}" text-anchor="middle" font-size="13" fill="var(--ink-3)">${esc(text)}</text></svg>`;
@@ -26,7 +28,7 @@ export const svgOpen = (w, h, label) => `<svg viewBox="0 0 ${w} ${h}" width="${w
 const tipAttr = (s) => esc(s).replace(/\n/g, "&#10;");
 export { tipAttr };
 // an axis label centred on x but kept inside 0..w (the first and last labels of a padded axis would be cut)
-export function axisLabel(x, y, text, w, size = 11) {
+export function axisLabel(x, y, text, w, size = chartFs(w)) {
   const half = textW(text, size) / 2;
   const at = x - half < 1 ? 'x="1" text-anchor="start"' : x + half > w - 1 ? `x="${w - 1}" text-anchor="end"` : `x="${x.toFixed(1)}" text-anchor="middle"`;
   return `<text ${at} y="${y}" font-size="${size}" fill="var(--ink-3)">${esc(text)}</text>`;
@@ -167,11 +169,11 @@ function loadChart(z, day, pick, w) {
   const step = niceStep(top, 4);
   for (let v = 0; v <= top + 1e-9; v += step) {
     out.push(`<line x1="${m.l}" x2="${w - m.r}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" stroke="var(--c-grid)"/>`,
-      `<text x="${m.l - 7}" y="${(y(v) + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="var(--ink-3)" class="num">${esc(fmt(v, step < 1 ? 1 : 0))}</text>`);
+      `<text x="${m.l - 7}" y="${(y(v) + 4).toFixed(1)}" text-anchor="end" font-size="${chartFs(w)}" fill="var(--ink-3)" class="num">${esc(fmt(v, step < 1 ? 1 : 0))}</text>`);
   }
-  out.push(`<text transform="translate(13 ${((m.t + H - m.b) / 2).toFixed(1)}) rotate(-90)" text-anchor="middle" font-size="11" fill="var(--ink-3)">${esc(t("trd.y"))}</text>`);
+  out.push(`<text transform="translate(13 ${((m.t + H - m.b) / 2).toFixed(1)}) rotate(-90)" text-anchor="middle" font-size="${chartFs(w)}" fill="var(--ink-3)">${esc(t("trd.y"))}</text>`);
   // a date every week (Mondays), every two weeks at phone width, and further apart when the labels would touch
-  const perDay = (x(1) - x(0)), longest = Math.max(...z.map((r) => textW(shortDate(r.date))));
+  const perDay = (x(1) - x(0)), longest = Math.max(...z.map((r) => textW(shortDate(r.date), chartFs(w))));
   let every = narrow ? 14 : 7;
   while (every * perDay < longest + 10 && every < n) every += 7;
   const first = z[0].date;
@@ -207,8 +209,8 @@ function loadChart(z, day, pick, w) {
   });
   // legend at the top left (two rows at phone width)
   const k1 = t("trd.s7"), k2 = t("trd.s28");
-  const lx2 = narrow ? m.l - 40 : m.l - 40 + 30 + textW(k1) + 18, ly2 = narrow ? 32 : 12;
-  out.push(`<g font-size="11" fill="var(--ink-2)">
+  const lx2 = narrow ? m.l - 40 : m.l - 40 + 30 + textW(k1, chartFs(w)) + 18, ly2 = narrow ? 32 : 12;
+  out.push(`<g font-size="${chartFs(w)}" fill="var(--ink-2)">
     <line x1="${m.l - 40}" x2="${m.l - 18}" y1="12" y2="12" stroke="var(--c-load)" stroke-width="2.4"/><circle cx="${m.l - 29}" cy="12" r="5" fill="var(--surface)" stroke="var(--c-load)" stroke-width="2"/>
     <text x="${m.l - 12}" y="16">${esc(k1)}</text>
     <line x1="${lx2}" x2="${lx2 + 22}" y1="${ly2}" y2="${ly2}" stroke="var(--ink)" stroke-width="2.4"/><text x="${lx2 + 28}" y="${ly2 + 4}">${esc(k2)}</text></g>`);
@@ -237,18 +239,18 @@ function monthlyTotals(m, w) {
   const out = [svgOpen(w, H, t("trm.totals"))];
   const step = niceStep(top, 4);
   for (let v = 0; v <= top + 1e-9; v += step) out.push(`<line x1="${pad.l}" x2="${w - pad.r}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" stroke="var(--c-grid)"/>`,
-    `<text x="${pad.l - 7}" y="${(y(v) + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="var(--ink-3)" class="num">${fmt(v, step < 1 ? 1 : 0)}</text>`);
-  out.push(`<text transform="translate(13 ${((pad.t + H - pad.b) / 2).toFixed(1)}) rotate(-90)" text-anchor="middle" font-size="11" fill="var(--ink-3)">${esc(t("trm.y"))}</text>`);
+    `<text x="${pad.l - 7}" y="${(y(v) + 4).toFixed(1)}" text-anchor="end" font-size="${chartFs(w)}" fill="var(--ink-3)" class="num">${fmt(v, step < 1 ? 1 : 0)}</text>`);
+  out.push(`<text transform="translate(13 ${((pad.t + H - pad.b) / 2).toFixed(1)}) rotate(-90)" text-anchor="middle" font-size="${chartFs(w)}" fill="var(--ink-3)">${esc(t("trm.y"))}</text>`);
   months.forEach((mo, i) => {
     const cx = pad.l + slot * (i + 0.5);
-    out.push(`<text x="${cx.toFixed(1)}" y="${H - 7}" text-anchor="middle" font-size="11" fill="var(--ink-3)">${esc(monthShort(mo))}</text>`);
+    out.push(`<text x="${cx.toFixed(1)}" y="${H - 7}" text-anchor="middle" font-size="${chartFs(w)}" fill="var(--ink-3)">${esc(monthShort(mo))}</text>`);
     const r = by.get(mo);
     if (!r) return;
     const part = partial(r);
     const tip = t("trm.tip", { month: monthLabel(mo), n: r.sessions, h: rround(r.minutes / 60) }) + (part ? t("trm.tip_partial", { c: r.days_covered, d: r.days_in_month }) : "");
     out.push(`<rect x="${(cx - bw / 2).toFixed(1)}" y="${y(r.sessions).toFixed(1)}" width="${bw.toFixed(1)}" height="${(y(0) - y(r.sessions)).toFixed(1)}" rx="3"
       fill="${part ? "var(--ink-3)" : "var(--ink-2)"}" fill-opacity="${part ? 0.42 : 1}" data-tip="${tipAttr(tip)}"/>`,
-      `<text x="${cx.toFixed(1)}" y="${(y(r.sessions) - 5).toFixed(1)}" text-anchor="middle" font-size="11" fill="var(--ink)" class="num">${r.sessions}${part ? "*" : ""}</text>`);
+      `<text x="${cx.toFixed(1)}" y="${(y(r.sessions) - 5).toFixed(1)}" text-anchor="middle" font-size="${chartFs(w)}" fill="var(--ink)" class="num">${r.sessions}${part ? "*" : ""}</text>`);
   });
   out.push("</svg>");
   return out.join("");
@@ -258,7 +260,7 @@ function monthlyTypes(m, w) {
   if (!m.length) return emptyChart(w, H, t("trm.none_types"));
   const months = monthsBetween(m[0].month, m[m.length - 1].month), by = new Map(m.map((r) => [r.month, r]));
   const labels = TYPE_KEYS.map((k) => t(`trm.type.${k}`));
-  const lw = Math.max(...labels.map((s) => textW(s, 11))) + 12;
+  const lw = Math.max(...labels.map((s) => textW(s, chartFs(w)))) + 12;
   const pad = { l: lw, r: 4, t: 4, b: 26 };
   const rowH = (H - pad.t - pad.b) / TYPE_KEYS.length, slot = (w - pad.l - pad.r) / months.length;
   const counts = m.flatMap((r) => TYPE_KEYS.map((k) => r[k]));
@@ -266,7 +268,7 @@ function monthlyTypes(m, w) {
   const out = [svgOpen(w, H, t("trm.types"))];
   TYPE_KEYS.forEach((k, j) => {
     const cy = pad.t + rowH * (j + 0.5);
-    out.push(`<text x="${lw - 8}" y="${(cy + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="var(--ink)">${esc(labels[j])}</text>`);
+    out.push(`<text x="${lw - 8}" y="${(cy + 4).toFixed(1)}" text-anchor="end" font-size="${chartFs(w)}" fill="var(--ink)">${esc(labels[j])}</text>`);
     months.forEach((mo, i) => {
       const r = by.get(mo);
       if (!r) return;
@@ -274,10 +276,10 @@ function monthlyTypes(m, w) {
       const tw = slot * 0.87, th = rowH * 0.9;
       out.push(`<rect x="${(cx - tw / 2).toFixed(1)}" y="${(cy - th / 2).toFixed(1)}" width="${tw.toFixed(1)}" height="${th.toFixed(1)}" rx="2"
         fill="var(--ink-2)" fill-opacity="${(0.06 + 0.84 * f).toFixed(3)}" data-tip="${tipAttr(t("trm.type_tip", { month: monthLabel(mo), type: labels[j], n: c }))}"/>`,
-        `<text x="${cx.toFixed(1)}" y="${(cy + 4).toFixed(1)}" text-anchor="middle" font-size="11" class="num" fill="${c > hi * 0.55 ? "var(--surface)" : "var(--ink)"}" pointer-events="none">${c}</text>`);
+        `<text x="${cx.toFixed(1)}" y="${(cy + 4).toFixed(1)}" text-anchor="middle" font-size="${chartFs(w)}" class="num" fill="${c > hi * 0.55 ? "var(--surface)" : "var(--ink)"}" pointer-events="none">${c}</text>`);
     });
   });
-  months.forEach((mo, i) => out.push(`<text x="${(pad.l + slot * (i + 0.5)).toFixed(1)}" y="${H - 7}" text-anchor="middle" font-size="11" fill="var(--ink-3)">${esc(monthShort(mo))}</text>`));
+  months.forEach((mo, i) => out.push(`<text x="${(pad.l + slot * (i + 0.5)).toFixed(1)}" y="${H - 7}" text-anchor="middle" font-size="${chartFs(w)}" fill="var(--ink-3)">${esc(monthShort(mo))}</text>`));
   out.push("</svg>");
   return out.join("");
 }
@@ -309,8 +311,8 @@ function batteryChart(g, day, w) {
   const y = (v) => H - m.b - ((v + 8) / 112) * (H - m.t - m.b);
   const out = [svgOpen(w, H, t("trb.chart"))];
   for (let v = 0; v <= 100; v += 25) out.push(`<line x1="${m.l}" x2="${w - m.r}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" stroke="var(--c-grid)"/>`,
-    `<text x="${m.l - 7}" y="${(y(v) + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="var(--ink-3)" class="num">${v}</text>`);
-  out.push(`<text transform="translate(13 ${((m.t + H - m.b) / 2).toFixed(1)}) rotate(-90)" text-anchor="middle" font-size="11" fill="var(--ink-3)">${esc(t("trb.y"))}</text>`);
+    `<text x="${m.l - 7}" y="${(y(v) + 4).toFixed(1)}" text-anchor="end" font-size="${chartFs(w)}" fill="var(--ink-3)" class="num">${v}</text>`);
+  out.push(`<text transform="translate(13 ${((m.t + H - m.b) / 2).toFixed(1)}) rotate(-90)" text-anchor="middle" font-size="${chartFs(w)}" fill="var(--ink-3)">${esc(t("trb.y"))}</text>`);
   // a label at the first of each month (inside the padded range, as ggplot's monthly breaks)
   const lastDay = g[n].date;
   for (let mo = `${addDays(first, -Math.ceil(pad)).slice(0, 7)}-01`; mo <= addDays(lastDay, Math.ceil(pad)); mo = addDays(mo, 32).slice(0, 8) + "01") {
